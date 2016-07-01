@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.ISystemInfoDao">
+
+	<!-- 系统消息列表总数 -->
+	<select id="getTotalCount" parameterType="java.util.Map"
+		resultType="int">
+		SELECT
+		count(*)
+		FROM
+		content c
+		LEFT JOIN admin_content ac ON
+		c.CONTENT_ID = ac.CONTENT_ID
+		LEFT JOIN admin a ON ac.ADMIN_ID = a.USER_ID
+		WHERE
+		c.USER_ID = - 1
+		<if test="null != contentBody and  !&quot;&quot;.equals(contentBody)">
+			AND c.CONTENT_BODY  like concat('%',#{contentBody},'%')
+		</if>
+		<if test="startDate!=null and !&quot;&quot;.equals(startDate.trim())">  
+	   		AND c.POSTTIME <![CDATA[>=]]>  unix_timestamp(#{startDate})*1000
+		</if>
+		<if test="endDate!=null and !&quot;&quot;.equals(endDate.trim())">  
+	    	AND c.POSTTIME <![CDATA[<=]]>  unix_timestamp(#{endDate})*1000 
+		</if>
+	</select>
+
+	<!--  系统消息列表   -->
+	<select id="getSystemInfoList" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		c.CONTENT_ID AS contentId,
+		c.USER_ID AS userId,
+		c.CONTENT_BODY AS contentBody,
+		c.POSTTIME AS postTime,
+		c.TYPE AS type,
+		c.FILETYPE AS fileType,
+		c.RETID AS retid,
+		c.REPLYID AS replyId,
+		c.REPLYTIMES AS replyTimes,
+		c.ZFTIMES AS zfTimes,
+		c.PINBI AS pinBi,
+		c.ZHIDING AS zhiDing,
+		c.PRAISETIMES AS praiseTimes,
+		c.SHOW_STATUS AS
+		showStatus,
+		c.IMAGE_URLS AS imageUrls,
+		a.USER_NAME as userName,
+		'系统管理员' as roleName
+		FROM
+		content c
+		LEFT JOIN admin_content ac ON c.CONTENT_ID =ac.CONTENT_ID 
+		LEFT JOIN admin a on ac.ADMIN_ID = a.USER_ID
+		WHERE
+		c.USER_ID = - 1
+		
+		<if test="null != contentBody and  !&quot;&quot;.equals(contentBody)">
+			AND c.CONTENT_BODY  like concat('%',#{contentBody},'%')
+		</if>
+		<if test="startDate!=null and !&quot;&quot;.equals(startDate.trim())">  
+	   		AND c.POSTTIME <![CDATA[>=]]>  unix_timestamp(#{startDate})*1000
+		</if>
+		<if test="endDate!=null and !&quot;&quot;.equals(endDate.trim())">  
+	    	AND c.POSTTIME <![CDATA[<=]]>  unix_timestamp(#{endDate})*1000 
+		</if>
+	</select>
+	
+	
+	<!-- 删除系统消息 -->
+	<delete id="deleteSystemInfoByIds" parameterType="java.util.List">
+			DELETE
+			FROM
+			content
+			WHERE
+			USER_ID = - 1
+			AND CONTENT_ID IN
+			<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+				#{item}
+			</foreach>
+	</delete>
+	
+	<!--  删除关联信息-->
+	<delete id="delteAdminContentByIds" parameterType="java.util.List">
+		   DELETE FROM admin_content WHERE CONTENT_ID IN 
+		   <foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+				#{item}
+		   </foreach>
+	</delete>
+	
+	<!-- 插入系统消息 -->
+	<insert id="addSystemInfo" parameterType="com.tianwen.dcdp.pojo.Content" useGeneratedKeys="true" keyProperty="contentId">
+			INSERT INTO content (
+			USER_ID,
+			TYPE,
+			CONTENT_BODY,
+			IMAGE_URLS,
+			POSTTIME
+			)
+			VALUES(
+			-1,
+			'网页',
+			#{contentBody},
+			#{imageUrls},
+			#{postTime}
+			)
+	</insert>
+	
+	<!-- 插入中间表数据 -->
+	<insert id="insertAdminContent" parameterType="java.util.Map">
+		  insert into admin_content (CONTENT_ID,ADMIN_ID) values(#{contentId},#{adminId})
+	</insert>
+	
+	<!-- 更新系统消息 -->
+	<update id="updateSystemInfo" parameterType="com.tianwen.dcdp.pojo.Content">
+			update content 
+			<set>
+			    <if test="contentBody != null and !&quot;&quot;.equals(contentBody.trim())">
+			    	CONTENT_BODY = #{contentBody}
+			    </if>
+				<if test="imageUrls != null and !&quot;&quot;.equals(imageUrls.trim())">
+					IMAGE_URLS  = #{imageUrls}
+				</if>
+			</set>
+			where CONTENT_ID  = #{contentId}
+	</update>
+	
+	
+	
+</mapper>

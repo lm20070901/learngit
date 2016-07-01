@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianwen.dcdp.dao.IProjectDao">
+
+	<resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Project">
+		<id column="PROJECT_ID" jdbcType="INTEGER" property="projectId" />
+		<result column="CREAT_ID" jdbcType="INTEGER" property="creatId" />
+		<result column="CREAT_TIME" jdbcType="BIGINT" property="creatTime" />
+		<result column="PROJECT_NAME" jdbcType="VARCHAR" property="projectName" />
+		<result column="INDUSTRY" jdbcType="INTEGER" property="industry" />
+		<result column="AREA_ID" jdbcType="INTEGER" property="areaId" />
+		<result column="PROJECT_STAGE" jdbcType="INTEGER" property="projectStage" />
+		<result column="PROJECT_VALUATION" jdbcType="DOUBLE" property="projectValuation" />
+		<result column="PROJECT_STATUS" jdbcType="SMALLINT" property="projectStatus" />
+		<result column="IS_ADMIN" jdbcType="BIT" property="isAdmin" />
+		<result column="PROJECT_HEAD" jdbcType="VARCHAR" property="projectHead" />
+		<result column="PHONE_NUM" jdbcType="VARCHAR" property="phoneNum" />
+		<result column="PROJCET_INTRODUCE" jdbcType="VARCHAR" property="projcetIntroduce" />
+		<result column="TEAM_INTRODUCE" jdbcType="VARCHAR" property="teamIntroduce" />
+		<result column="IS_RECOMMEND" jdbcType="BIT" property="isRecommend" />
+		<result column="SHOW_STATUS" jdbcType="BIT" property="showStatus" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		PROJECT_ID, CREAT_ID, CREAT_TIME, PROJECT_NAME, INDUSTRY, AREA_ID, PROJECT_STAGE,
+		PROJECT_VALUATION, PROJECT_STATUS, IS_ADMIN, PROJECT_HEAD, PHONE_NUM,
+		PROJCET_INTRODUCE,
+		TEAM_INTRODUCE,IS_RECOMMEND,SHOW_STATUS
+	</sql>
+
+	<select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from project
+		where PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from project
+		where PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</delete>
+	
+	<insert id="insert" parameterType="com.tianwen.dcdp.pojo.Project">
+		insert into project (PROJECT_ID, CREAT_ID, CREAT_TIME,
+		PROJECT_NAME, INDUSTRY, AREA_ID,
+		PROJECT_STAGE, PROJECT_VALUATION, PROJECT_STATUS,
+		IS_ADMIN, PROJECT_HEAD, PHONE_NUM,
+		PROJCET_INTRODUCE, TEAM_INTRODUCE, IS_RECOMMEND,SHOW_STATUS)
+		values (#{projectId,jdbcType=INTEGER}, #{creatId,jdbcType=INTEGER},
+		#{creatTime,jdbcType=BIGINT},
+		#{projectName,jdbcType=VARCHAR}, #{industry,jdbcType=INTEGER}, #{areaId,jdbcType=INTEGER},
+		#{projectStage,jdbcType=INTEGER}, #{projectValuation,jdbcType=DOUBLE},
+		#{projectStatus,jdbcType=SMALLINT},
+		#{isAdmin,jdbcType=BIT}, #{projectHead,jdbcType=VARCHAR}, #{phoneNum,jdbcType=VARCHAR},
+		#{projcetIntroduce,jdbcType=VARCHAR},
+		#{teamIntroduce,jdbcType=VARCHAR},#{isRecommend,jdbcType=BIT},#{showStatus,jdbcType=BIT})
+	</insert>
+
+
+	<insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Project">
+		insert into project
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">
+				PROJECT_ID,
+			</if>
+			<if test="creatId != null">
+				CREAT_ID,
+			</if>
+			<if test="creatTime != null">
+				CREAT_TIME,
+			</if>
+			<if test="projectName != null">
+				PROJECT_NAME,
+			</if>
+			<if test="industry != null">
+				INDUSTRY,
+			</if>
+			<if test="areaId != null">
+				AREA_ID,
+			</if>
+			<if test="projectStage != null">
+				PROJECT_STAGE,
+			</if>
+			<if test="projectValuation != null">
+				PROJECT_VALUATION,
+			</if>
+			<if test="projectStatus != null or projectStatus==0">
+				PROJECT_STATUS,
+			</if>
+			<if test="isAdmin != null or isAdmin==0">
+				IS_ADMIN,
+			</if>
+			<if test="projectHead != null">
+				PROJECT_HEAD,
+			</if>
+			<if test="phoneNum != null">
+				PHONE_NUM,
+			</if>
+			<if test="projcetIntroduce != null">
+				PROJCET_INTRODUCE,
+			</if>
+			<if test="teamIntroduce != null">
+				TEAM_INTRODUCE,
+			</if>
+			<if test="isRecommend != null or isRecommend==0">
+       			 IS_RECOMMEND,
+      		</if>
+      		<if test="showStatus != null or showStatus==0">
+       			 SHOW_STATUS,
+      		</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="projectId != null">
+				#{projectId,jdbcType=INTEGER},
+			</if>
+			<if test="creatId != null">
+				#{creatId,jdbcType=INTEGER},
+			</if>
+			<if test="creatTime != null">
+				#{creatTime,jdbcType=BIGINT},
+			</if>
+			<if test="projectName != null">
+				#{projectName,jdbcType=VARCHAR},
+			</if>
+			<if test="industry != null">
+				#{industry,jdbcType=INTEGER},
+			</if>
+			<if test="areaId != null">
+				#{areaId,jdbcType=INTEGER},
+			</if>
+			<if test="projectStage != null">
+				#{projectStage,jdbcType=INTEGER},
+			</if>
+			<if test="projectValuation != null">
+				#{projectValuation,jdbcType=DOUBLE},
+			</if>
+			<if test="projectStatus != null   or projectStatus==0">
+				#{projectStatus,jdbcType=SMALLINT},
+			</if>
+			<if test="isAdmin != null or isAdmin==0">
+				#{isAdmin,jdbcType=BIT},
+			</if>
+			<if test="projectHead != null">
+				#{projectHead,jdbcType=VARCHAR},
+			</if>
+			<if test="phoneNum != null">
+				#{phoneNum,jdbcType=VARCHAR},
+			</if>
+			<if test="projcetIntroduce != null">
+				#{projcetIntroduce,jdbcType=VARCHAR},
+			</if>
+			<if test="teamIntroduce != null">
+				#{teamIntroduce,jdbcType=VARCHAR},
+			</if>
+			<if test="isRecommend != null or isRecommend==0">
+        		#{isRecommend,jdbcType=BIT},
+     		</if>
+     		<if test="showStatus != null or showStatus==0">
+        		#{showStatus,jdbcType=BIT},
+     		</if>
+     		
+		</trim>
+	</insert>
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Project">
+		update project
+		<set>
+			<if test="creatId != null">
+				CREAT_ID = #{creatId,jdbcType=INTEGER},
+			</if>
+			<if test="creatTime != null">
+				CREAT_TIME = #{creatTime,jdbcType=BIGINT},
+			</if>
+			<if test="projectName != null">
+				PROJECT_NAME = #{projectName,jdbcType=VARCHAR},
+			</if>
+			<if test="industry != null">
+				INDUSTRY = #{industry,jdbcType=INTEGER},
+			</if>
+			<if test="areaId != null">
+				AREA_ID = #{areaId,jdbcType=INTEGER},
+			</if>
+			<if test="projectStage != null">
+				PROJECT_STAGE = #{projectStage,jdbcType=INTEGER},
+			</if>
+			<if test="projectValuation != null">
+				PROJECT_VALUATION = #{projectValuation,jdbcType=DOUBLE},
+			</if>
+			<if test="projectStatus != null or projectStatus==0">
+				PROJECT_STATUS = #{projectStatus,jdbcType=SMALLINT},
+			</if>
+			<if test="isAdmin != null or isAdmin==0">
+				IS_ADMIN = #{isAdmin,jdbcType=BIT},
+			</if>
+			<if test="projectHead != null">
+				PROJECT_HEAD = #{projectHead,jdbcType=VARCHAR},
+			</if>
+			<if test="phoneNum != null">
+				PHONE_NUM = #{phoneNum,jdbcType=VARCHAR},
+			</if>
+			<if test="projcetIntroduce != null">
+				PROJCET_INTRODUCE = #{projcetIntroduce,jdbcType=VARCHAR},
+			</if>
+			<if test="teamIntroduce != null">
+				TEAM_INTRODUCE = #{teamIntroduce,jdbcType=VARCHAR},
+			</if>
+			<if test="isRecommend != null or isRecommend==0">
+       			 IS_RECOMMEND = #{isRecommend,jdbcType=BIT},
+     		</if>
+     		<if test="showStatus != null or showStatus==0">
+       			 SHOW_STATUS = #{showStatus,jdbcType=BIT},
+     		</if>
+     		
+		</set>
+		where PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</update>
+
+	<update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Project">
+		update project
+		set CREAT_ID = #{creatId,jdbcType=INTEGER},
+		CREAT_TIME = #{creatTime,jdbcType=BIGINT},
+		PROJECT_NAME = #{projectName,jdbcType=VARCHAR},
+		INDUSTRY = #{industry,jdbcType=INTEGER},
+		AREA_ID = #{areaId,jdbcType=INTEGER},
+		PROJECT_STAGE = #{projectStage,jdbcType=INTEGER},
+		PROJECT_VALUATION = #{projectValuation,jdbcType=DOUBLE},
+		PROJECT_STATUS = #{projectStatus,jdbcType=SMALLINT},
+		IS_ADMIN = #{isAdmin,jdbcType=BIT},
+		PROJECT_HEAD = #{projectHead,jdbcType=VARCHAR},
+		PHONE_NUM = #{phoneNum,jdbcType=VARCHAR},
+		PROJCET_INTRODUCE = #{projcetIntroduce,jdbcType=VARCHAR},
+		TEAM_INTRODUCE = #{teamIntroduce,jdbcType=VARCHAR},
+		IS_RECOMMEND = #{isRecommend,jdbcType=BIT},
+		SHOW_STATUS = #{showStatus,jdbcType=BIT}
+		where PROJECT_ID = #{projectId,jdbcType=INTEGER}
+	</update>
+
+	<!-- 工程列表 -->
+	<select id="getProjectList" parameterType="java.util.Map" resultType="java.util.Map">
+			select
+			p.PROJECT_ID AS projectId,
+			p.CREAT_ID AS creatId,
+			p.CREAT_TIME AS creatTime ,
+			p.PROJECT_NAME AS projectName,
+			p.INDUSTRY AS industry,
+			(SELECT s.NAME FROM system s  WHERE s.CODE= p.INDUSTRY and s.GROUP_ID =1 ) AS industryName,
+			p.AREA_ID AS areaId,
+			(SELECT d.name FROM district d where d.id=p.AREA_ID ) AS areaName,
+			p.PROJECT_STAGE AS projectStage,
+			(SELECT s.NAME FROM system s where s.CODE= p.PROJECT_STAGE and s.GROUP_ID = 2 ) AS projectStageName,
+			p.PROJECT_VALUATION AS projectValuation,
+			p.PROJECT_STATUS AS projectStatus,
+			p.IS_ADMIN AS isAdmin,
+			p.SHOW_STATUS AS showStatus,
+			p.IS_RECOMMEND AS isRecommend ,
+			p.PROJECT_HEAD AS projectHead,
+			p.PHONE_NUM AS phoneNum,
+			p.PROJCET_INTRODUCE AS projcetIntroduce,
+			p.TEAM_INTRODUCE AS teamIntroduce
+			from project p
+		<where>
+			<if test="projectId!=null">
+				p.PROJECT_ID = #{projectId,jdbcType=INTEGER}
+			</if>
+			<if test="isAdmin != null or isAdmin==0">
+				AND p.IS_ADMIN = #{isAdmin,jdbcType=BIT}
+			</if>
+			<if test="isRecommend != null or isRecommend==0">
+				AND p.IS_RECOMMEND = #{isRecommend,jdbcType=BIT}
+			</if>
+			<if test="projectName!=null and !&quot;&quot;.equals(projectName.trim()) ">
+				AND p.PROJECT_NAME LIKE  CONCAT('%',trim(#{projectName,jdbcType=VARCHAR}),'%') 
+			</if>
+			<if test="areaId != null">
+				AND p.AREA_ID = #{areaId,jdbcType=INTEGER}
+			</if>
+			<if test="industry != null">
+				AND p.INDUSTRY = #{industry,jdbcType=INTEGER}
+			</if>
+			<if test="projectStatus != null or projectStatus==0">
+				AND p.PROJECT_STATUS = #{projectStatus,jdbcType=SMALLINT}
+			</if>
+		</where>
+
+	</select>
+
+	<!-- 更新显示状态 -->
+	<update id="updateStatus" parameterType="java.util.List">
+		UPDATE project  p SET
+		p.SHOW_STATUS =  (case when p.SHOW_STATUS=0 then 1 else 0 end) <!-- 根据字段值 自动更改 -->
+		WHERE p.PROJECT_ID IN
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>	
+	
+	</update>
+	
+	<!-- 批量删除项目 -->
+	<delete id="deleteProjectByIds" parameterType="java.util.List">
+		DELETE   from project	where PROJECT_ID in 
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	<!-- 改变是否推荐状态 -->
+	<update id="changeRecommendStatus" parameterType="java.util.Map" >
+		UPDATE project SET IS_RECOMMEND = #{isRecommend,jdbcType=BIT} 
+		WHERE PROJECT_ID  IN
+		<foreach collection="idList" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>	
+	</update>
+	
+	
+	<!-- 发布项目 -->
+	<update id="publishProject" parameterType="java.util.Map">
+		UPDATE project SET PROJECT_STATUS = #{projectStatus}
+		WHERE PROJECT_ID  IN
+		<foreach collection="idList" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>	
+	</update>
+</mapper>

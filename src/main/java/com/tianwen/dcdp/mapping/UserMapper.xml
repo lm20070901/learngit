@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IUserDao" >
+
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.User" >
+    <id column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="NICKNAME" property="nickName" jdbcType="VARCHAR" />
+    <result column="REALNAME" property="realName" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="USER_HEAD" property="userHead" jdbcType="INTEGER" />
+    <result column="USER_AUTH" property="userAuth" jdbcType="VARCHAR" />
+    <result column="AUTH_INFO" property="authInfo" jdbcType="INTEGER" />
+    <result column="MAILADRES" property="mailAdres" jdbcType="VARCHAR" />
+    <result column="PROVINCEID" property="provinceId" jdbcType="INTEGER" />
+    <result column="CITYID" property="cityId" jdbcType="INTEGER" />
+    <result column="BLOGURL" property="blogUrl" jdbcType="INTEGER" />
+    <result column="QQ" property="qq" jdbcType="INTEGER" />
+    <result column="MSN" property="msn" jdbcType="INTEGER" />
+    <result column="SIGNUPDATE" property="signUpDate" jdbcType="INTEGER" />
+    <result column="USER_GENDER" property="userGender" jdbcType="INTEGER" />
+    <result column="USER_INFO" property="userInfo" jdbcType="INTEGER" />
+    <result column="MSG_NUM" property="msgNum" jdbcType="INTEGER" />
+    <result column="FOLLOW_NUM" property="followNum" jdbcType="INTEGER" />
+    <result column="FOLLOWME_NUM" property="followmeNum" jdbcType="INTEGER" />
+    <result column="PRIREAD" property="priRead" jdbcType="INTEGER" />
+    <result column="NEWFOLLOWNUM" property="newFollowNum" jdbcType="INTEGER" />
+    <result column="ATNUM" property="atNum" jdbcType="INTEGER" />
+    <result column="COMMENTS" property="comments" jdbcType="INTEGER" />
+    <result column="THEMENAME" property="themeName" jdbcType="INTEGER" />
+    <result column="THEMEBG" property="themeBg" jdbcType="INTEGER" />
+    <result column="THEMETYPE" property="themeType" jdbcType="INTEGER" />
+    <result column="AUTH_EMAIL" property="authEmail" jdbcType="INTEGER" />
+    <result column="USERLOCK" property="userLock" jdbcType="INTEGER" />
+    <result column="LAST_LOGIN" property="lastLogin" jdbcType="INTEGER" />
+    <result column="LAST_CONTENT" property="lastContent" jdbcType="INTEGER" />
+    <result column="LAST_CONT_TIME" property="lastContTime" jdbcType="INTEGER" />
+    <result column="REGIP" property="regIp" jdbcType="INTEGER" />
+    <result column="PRIMSGLIMIT" property="priMsgLimit" jdbcType="INTEGER" />
+    <result column="LANG" property="lang" jdbcType="INTEGER" />
+    <result column="RESETCODE" property="resetCode" jdbcType="INTEGER" />
+    <result column="LOGIN_TIMES" property="loginTimes" jdbcType="INTEGER" />
+    <result column="BIRTHDAY" property="birthday" jdbcType="BIGINT" />
+    <result column="EDUCATIONID" property="educationId" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <sql id="Base_Column_List" >
+    USER_ID,USER_NAME,NICKNAME,REALNAME,PASSWORD,USER_HEAD,USER_AUTH,AUTH_INFO,MAILADRES,PROVINCEID,CITYID,BLOGURL,
+	QQ,MSN,SIGNUPDATE,USER_GENDER,USER_INFO,MSG_NUM,FOLLOW_NUM,FOLLOWME_NUM,PRIREAD,NEWFOLLOWNUM,ATNUM,
+	COMMENTS,THEMENAME,THEMEBG,THEMETYPE,AUTH_EMAIL,USERLOCK,LAST_LOGIN,LAST_CONTENT,LAST_CONT_TIME,
+	REGIP,PRIMSGLIMIT,LANG,RESETCODE,LOGIN_TIMES,BIRTHDAY,EDUCATIONID
+  </sql>
+  
+  <sql id="whereCondition" >
+  	<if test="userId!=null and userId!=''">
+		AND USER_ID = #{userId}
+	</if>
+	<if test="userName!=null and userName!=''">
+		AND USER_NAME like CONCAT('%',#{userName},'%')
+	</if>
+	<if test="nickName!=null and nickName!=''">
+		AND NICKNAME like CONCAT('%',#{nickName},'%')
+	</if>
+	<if test="userAuth==0">
+		AND USER_AUTH = #{userAuth}
+	</if>
+	<if test="userAuth!=null and userAuth!='' ">
+		AND USER_AUTH = #{userAuth}
+	</if>
+  </sql>
+  
+  
+  <!--查询总数  -->
+  <select id="getTotalCount" parameterType="java.util.Map"  resultType="int">
+		select count(*) from USER where 1=1    <include refid="whereCondition"/>
+  </select>
+  
+  <!-- 分页查询 -->
+  <select id="getByPage" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM USER 
+    WHERE USER_ID > 0 <include refid="whereCondition"/>  order by USER_ID desc 
+	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <!--根据用户ID 查询用户信息c -->
+  <select id="getUserInfoById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  		 SELECT 
+    <include refid="Base_Column_List" />
+   		 FROM USER where USER_ID = #{userId}
+  </select>
+  
+  <!-- 更新 -->
+  <update id="updateUser" parameterType="map" >
+    UPDATE USER
+    <set >
+      <if test="nickName != null and nickName!=''" >
+        NICKNAME = #{nickName},
+      </if>
+      <if test="userName != null and userName !=''" >
+        USER_NAME = #{userName},
+      </if>
+      <if test="realName != null and realName!=''" >
+        REALNAME = #{realName},
+      </if>
+      <if test="password != null and password!=''" >
+        PASSWORD = #{password},
+      </if>
+      <if test="userHead != null and userHead!=''" >
+        USER_HEAD = #{userHead},
+      </if>
+      <if test="userAuth != null and userAuth!=''" >
+        USER_AUTH = #{userAuth},
+      </if>
+      <if test="authInfo != null and authInfo!=''" >
+        AUTH_INFO = #{authInfo},
+      </if>
+      <if test="mailAdres != null and mailAdres!=''" >
+        MAILADRES = #{mailAdres},
+      </if>
+      <if test="provinceId != null and provinceId!=''" >
+        PROVINCEID = #{provinceId},
+      </if>
+      <if test="cityId != null and cityId!=''" >
+        CITYID = #{cityId},
+      </if>
+      <if test="blogUrl != null and blogUrl!=''" >
+        BLOGURL = #{blogUrl},
+      </if>
+      <if test="qq != null and qq!=''" >
+        QQ = #{qq},
+      </if>
+      <if test="msn != null and msn!=''" >
+        MSN = #{msn},
+      </if>
+      <if test="signUpDate != null and signUpDate!=''" >
+        SIGNUPDATE = #{signUpDate},
+      </if>
+      <if test="userGender != null and userGender!=''" >
+        USER_GENDER = #{userGender},
+      </if>
+      <if test="userInfo != null and userInfo!=''" >
+        USER_INFO = #{userInfo},
+      </if>
+      <if test="msgNum != null and msgNum!=''" >
+        MSG_NUM = #{msgNum},
+      </if>
+      <if test="followNum != null and followNum!=''" >
+        FOLLOW_NUM = #{followNum},
+      </if>
+      <if test="followmeNum != null and followmeNum!=''" >
+        FOLLOWME_NUM = #{followmeNum},
+      </if>
+      <if test="priRead != null and priRead!=''" >
+        PRIREAD = #{priRead},
+      </if>
+      <if test="newFollowNum != null and newFollowNum!=''" >
+        NEWFOLLOWNUM = #{newFollowNum},
+      </if>
+      <if test="atNum != null and atNum!=''" >
+        ATNUM = #{atNum},
+      </if>
+      <if test="comments != null and comments!=''" >
+        COMMENTS = #{comments},
+      </if>
+      <if test="themeName != null and themeName!=''" >
+        THEMENAME = #{themeName},
+      </if>
+      <if test="themeBg != null and themeBg!=''" >
+        THEMEBG = #{themeBg},
+      </if>
+      <if test="themeType != null and themeType!=''" >
+        THEMETYPE = #{themeType},
+      </if>
+      <if test="authEmail != null and authEmail!=''" >
+        AUTH_EMAIL = #{authEmail},
+      </if>
+      <if test="userLock != null and userLock!=''" >
+        USERLOCK = #{userLock},
+      </if>
+      <if test="lastLogin != null and lastLogin!=''" >
+        LAST_LOGIN = #{lastLogin},
+      </if>
+      <if test="lastContent != null and lastContent!=''" >
+        LAST_CONTENT = #{lastContent},
+      </if>
+      <if test="lastContTime != null and lastContTime!=''" >
+        LAST_CONT_TIME = #{lastContTime},
+      </if>
+      <if test="regIp != null and regIp!=''" >
+        REGIP = #{regIp},
+      </if>
+      <if test="lang != null and lang!=''" >
+        LANG = #{lang},
+      </if>
+      <if test="resetCode != null and resetCode!=''" >
+        RESETCODE = #{resetCode},
+      </if>
+      <if test="loginTimes != null and loginTimes!=''" >
+        LOGIN_TIMES = #{loginTimes},
+      </if>
+      <if test="educationId != null and educationId != ''" >
+        EDUCATIONID = #{educationId},
+      </if>
+      <if test="birthday != null and birthday != ''" >
+        BIRTHDAY = #{birthday},
+      </if>
+    </set>
+    WHERE USER_ID = #{userId}
+  </update>
+  
+  <!-- 批量删除用户 -->
+  <delete id="deleteUserByIds"  parameterType = "java.util.List">
+	delete from USER where USER_ID IN
+	<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+		#{item}
+	</foreach>
+  </delete>
+  
+  
+  <!--  锁定/解锁用户 -->
+  
+  <update  id="changeUserLockedStatus"  parameterType = "java.util.List" >
+    UPDATE   USER SET 
+    
+        USERLOCK = (case when USERLOCK=0 then 1 else 0 end) <!--  根据字段值 自动更改 -->
+      WHERE USER_ID IN 
+  	<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+		#{item}
+	</foreach>
+  </update>
+  
+  <!--  重置密码  -->
+  <update id="resetPassword"  parameterType = "java.util.List" >
+  	UPDATE   USER SET   PASSWORD = md5('123456') 
+        WHERE USER_ID IN 
+  	<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+		#{item}
+	</foreach>
+  </update>
+</mapper>

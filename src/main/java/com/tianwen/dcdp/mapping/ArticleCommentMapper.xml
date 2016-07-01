@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IArticleCommentDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.ArticleComment" >
+    <id column="COMMENT_ID" property="commentId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="REPLY_COMMENT_ID" property="replyCommentId" jdbcType="INTEGER" />
+    <result column="COMMENT_UID" property="commentUid" jdbcType="INTEGER" />
+    <result column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+    <result column="COMMENT_BODY" property="commentBody" jdbcType="VARCHAR" />
+    <result column="DATELINE" property="dateline" jdbcType="BIGINT" />
+    <result column="IS_READ" property="isRead" jdbcType="TINYINT" />
+    <result column="SHOW_STATUS" property="showStatus" jdbcType="TINYINT" />
+    <result column="NICKNAME" property="nickName" jdbcType="VARCHAR"/>
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+    <result column="TITLE" property="articleTitle" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    COMMENT_ID, USER_ID, REPLY_COMMENT_ID, COMMENT_UID, CONTENT_ID, COMMENT_BODY, DATELINE, 
+    IS_READ, SHOW_STATUS
+  </sql>
+  
+  <sql id="whereCondition">
+  	<if test="author != null and !&quot;&quot;.equals(author.trim())">
+  		and b.NICKNAME LIKE concat('%',#{author},'%')
+  	</if>
+  	<if test="content != null and !&quot;&quot;.equals(content.trim())">
+  		and a.COMMENT_BODY LIKE concat('%',#{content},'%')
+  	</if>
+  	<if test="articleId != null">
+  		and a.CONTENT_ID = #{articleId}
+  	</if>
+  	<if test="startDate != null">
+  		AND a.DATELINE <![CDATA[>=]]> #{startDate}  
+  	</if>
+  	<if test="endDate != null">
+  		AND a.DATELINE <![CDATA[<=]]> #{endDate}  
+  	</if>
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from article_comment
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from article_comment
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.ArticleComment" >
+    insert into article_comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        COMMENT_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="replyCommentId != null" >
+        REPLY_COMMENT_ID,
+      </if>
+      <if test="commentUid != null" >
+        COMMENT_UID,
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID,
+      </if>
+      <if test="commentBody != null" >
+        COMMENT_BODY,
+      </if>
+      <if test="dateline != null" >
+        DATELINE,
+      </if>
+      <if test="isRead != null" >
+        IS_READ,
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="replyCommentId != null" >
+        #{replyCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentUid != null" >
+        #{commentUid,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentBody != null" >
+        #{commentBody,jdbcType=VARCHAR},
+      </if>
+      <if test="dateline != null" >
+        #{dateline,jdbcType=BIGINT},
+      </if>
+      <if test="isRead != null" >
+        #{isRead,jdbcType=TINYINT},
+      </if>
+      <if test="showStatus != null" >
+        #{showStatus,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.ArticleComment" >
+    update article_comment
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="replyCommentId != null" >
+        REPLY_COMMENT_ID = #{replyCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentUid != null" >
+        COMMENT_UID = #{commentUid,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentBody != null" >
+        COMMENT_BODY = #{commentBody,jdbcType=VARCHAR},
+      </if>
+      <if test="dateline != null" >
+        DATELINE = #{dateline,jdbcType=BIGINT},
+      </if>
+      <if test="isRead != null" >
+        IS_READ = #{isRead,jdbcType=TINYINT},
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS = #{showStatus,jdbcType=BIT},
+      </if>
+    </set>
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from article_comment a left join USER b on a.USER_ID = b.USER_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <select id="selectPageList" parameterType="map" resultMap="BaseResultMap">
+  	select a.*, b.USER_NAME, b.NICKNAME, c.TITLE
+  	from article_comment a left join USER b on a.USER_ID = b.USER_ID left join article c on a.CONTENT_ID = c.CONTENT_ID 
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	order by a.COMMENT_ID desc
+  	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <delete id="deleteByIds" parameterType="list">
+  	delete from article_comment
+  	where COMMENT_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+  
+  <update id="modifyVisibility" parameterType="list">
+  	update article_comment
+  	set SHOW_STATUS = (case when SHOW_STATUS = 0 then 1 else 0 end)
+  	where COMMENT_ID in
+	<foreach collection="list" item="item" separator="," open="(" close=")">
+		#{item}
+	</foreach>
+  	
+  </update>
+</mapper>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IQuestionCategoryDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.QuestionCategory" >
+    <id column="CATEGORY_ID" property="categoryId" jdbcType="INTEGER" />
+    <result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR" />
+    <result column="QUESTION_COUNT" property="questionCount" jdbcType="INTEGER" />
+    <result column="IS_VISIBLE" property="isVisible" jdbcType="TINYINT" />
+    <result column="ICON" property="icon" jdbcType="VARCHAR" />
+    <result column="MODEL_ID" property="modelId" jdbcType="TINYINT"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CATEGORY_ID, CATEGORY_NAME, QUESTION_COUNT, IS_VISIBLE, ICON, MODEL_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from question_category
+    where CATEGORY_ID = #{categoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from question_category
+    where CATEGORY_ID = #{categoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.QuestionCategory" useGeneratedKeys="true" keyProperty="categoryId">
+    insert into question_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="categoryId != null" >
+        CATEGORY_ID,
+      </if>
+      <if test="modelId != null">
+      	MODEL_ID,
+      </if>
+      <if test="categoryName != null" >
+        CATEGORY_NAME,
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT,
+      </if>
+      <if test="isVisible != null" >
+        IS_VISIBLE,
+      </if>
+      <if test="icon != null" >
+        ICON,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="modelId != null">
+      	#{modelId, jdbcType=TINYINT},
+      </if>
+      <if test="categoryName != null" >
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="questionCount != null" >
+        #{questionCount,jdbcType=INTEGER},
+      </if>
+      <if test="isVisible != null" >
+        #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.QuestionCategory" >
+    update question_category
+    <set >
+      <if test="categoryName != null" >
+        CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelId != null">
+      	MODEL_ID = #{modelId, jdbcType=TINYINT},
+      </if>
+      <if test="questionCount != null" >
+        QUESTION_COUNT = #{questionCount,jdbcType=INTEGER},
+      </if>
+      <if test="isVisible != null" >
+        IS_VISIBLE = #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        ICON = #{icon,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CATEGORY_ID = #{categoryId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectTotalCount" parameterType="int" resultType="int">
+  	select count(1) from question_category
+  	where MODEL_ID = #{modelId, jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectPageCategory" parameterType="map" resultMap="BaseResultMap">
+  	select * 
+  	from question_category
+  	where MODEL_ID = #{modelId}
+  	order by CATEGORY_ID desc
+  	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <delete id="batchDeleteById" parameterType="list">
+  	delete from question_category
+  	where CATEGORY_ID in
+  	<foreach collection="list" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+</mapper>

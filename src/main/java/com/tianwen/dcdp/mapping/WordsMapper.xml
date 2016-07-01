@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IWordsDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Words" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="WORD" property="word" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="TINYINT" />
+    <result column="REMARKS" property="remarks" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, WORD, TYPE, REMARKS
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from words
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from words
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Words" useGeneratedKeys="true" keyProperty="id">
+    insert into words
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="word != null" >
+        WORD,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="remarks != null">
+      	REMARKS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="word != null" >
+        #{word,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="remarks != null">
+      	#{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Words" >
+    update words
+    <set >
+      <if test="word != null" >
+        WORD = #{word,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="remarks != null">
+      	REMARKS = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询记录总数 -->
+  <select id="selectTotalCount" resultType="int">
+  	select count(1)
+  	from words
+  </select>
+  
+  <!-- 查询记录列表 -->
+  <select id="selectList" parameterType="map" resultMap="BaseResultMap">
+  	select
+  	<include refid="Base_Column_List"></include>
+  	from words
+  	order by ID desc
+  	<if test="start != null and size != null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+  
+  <!-- 批量删除 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from words
+  	where ID in
+  	<foreach collection="list" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+</mapper>

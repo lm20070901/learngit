@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IAdminDao" >
+
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Admin" >
+    <id column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+    <result column="LAST_LOGIN_TIME" property="lastLoginTime" jdbcType="VARCHAR" />
+    <result column="LAST_LOGIN_IP" property="lastLoginIP" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="INTEGER" />
+    <result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+    <result column="IS_USED" property="isUsed" jdbcType="INTEGER" />
+    <result column="MARK" property="mark" jdbcType="VARCHAR" />
+    <result column="IS_SYSTEM" property="isSystem" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="whereCondition" >
+    <if test="userName!=null and userName!=''">  
+    AND USER_NAME = #{userName}  
+	</if>
+	<if test="userId!=null and userId!=''">  
+    AND USER_ID = #{userId}  
+	</if>
+	<if test="startDate!=null and startDate!=''">  
+    AND LAST_LOGIN_TIME <![CDATA[>=]]> #{startDate}  
+	</if>
+	<if test="endDate!=null and endDate!=''">  
+    AND LAST_LOGIN_TIME <![CDATA[<=]]> #{endDate}  
+	</if>
+  </sql>
+  
+  <sql id="Base_Column_List" >
+    USER_ID, USER_NAME, PASSWORD, LAST_LOGIN_TIME, LAST_LOGIN_IP, R.ROLE_ID, R.ROLE_NAME, IS_USED, A.MARK, A.IS_SYSTEM
+  </sql>
+  <!-- 分页查询 -->
+  <select id="getByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM ADMIN A
+    LEFT JOIN ROLE R ON A.ROLE_ID = R.ROLE_ID
+    
+    WHERE 1 = 1 <include refid="whereCondition"/>
+	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+  <!-- 查询总数 -->
+  <select id="getTotalCount" resultType="int" parameterType="map" >
+    SELECT COUNT(1)
+    FROM ADMIN A
+    LEFT JOIN ROLE R ON A.ROLE_ID = R.ROLE_ID
+    
+    WHERE 1 = 1 <include refid="whereCondition"/>
+  </select>
+  <!-- 新增 -->
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.Admin" >
+    INSERT INTO ADMIN(USER_NAME, PASSWORD, ROLE_ID, MARK)
+    VALUES(#{userName},#{password},#{roleId},#{mark})
+  </insert>
+  <!-- 删除 -->
+  <delete id="delete" parameterType="string" >
+    DELETE FROM ADMIN
+    WHERE USER_ID in (#{userId})
+  </delete>
+  <!-- 更新 -->
+  <update id="update" parameterType="map" >
+    UPDATE ADMIN
+    <set >
+      <if test="isUsed != null and isUsed!=''" >
+        IS_USED = #{isUsed},
+      </if>
+      <if test="password != null and password!=''" >
+        PASSWORD = #{password},
+      </if>
+    </set>
+    WHERE USER_ID = #{userId}
+  </update>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+</mapper>

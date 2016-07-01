@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IQuestionDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Question" >
+    <id column="QUESTION_ID" property="questionId" jdbcType="INTEGER" />
+    <result column="CATEGORY_ID" property="categoryId" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="PUBLISH_TIME" property="publishTime" jdbcType="BIGINT" />
+    <result column="READ_TIMES" property="readTimes" jdbcType="INTEGER" />
+    <result column="ATTENTION_TIMES" property="attentionTimes" jdbcType="INTEGER" />
+    <result column="ANSWER_TIMES" property="answerTimes" jdbcType="INTEGER" />
+    <result column="REPOST_TIMES" property="repostTimes" jdbcType="INTEGER" />
+    <result column="SHOW_STATUS" property="showStatus" jdbcType="TINYINT" />
+    <result column="ORDER_NUM" property="orderNum" jdbcType="INTEGER"/>
+    <result column="NICKNAME" property="nickName" jdbcType="VARCHAR"/>
+    <result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.tianwen.dcdp.pojo.Question" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    QUESTION_ID, CATEGORY_ID, TITLE, USER_ID, PUBLISH_TIME, READ_TIMES, ATTENTION_TIMES, 
+    ANSWER_TIMES, REPOST_TIMES, SHOW_STATUS
+  </sql>
+  
+  <sql id="whereCondition">
+  	<if test="title != null and !&quot;&quot;.equals(title.trim())">
+  		and a.TITLE like concat('%',#{title},'%')
+  	</if>
+  	<if test="modelId != null">
+  		and c.MODEL_ID = #{modelId}
+  	</if>
+  	<if test="startDate!=null">  
+   		AND a.PUBLISH_TIME <![CDATA[>=]]> #{startDate}  
+	</if>
+	<if test="endDate!=null">  
+    	AND a.PUBLISH_TIME <![CDATA[<=]]> #{endDate}  
+	</if>
+  </sql>
+  
+  <sql id="whereConditionCategory">
+  	<if test="title != null and !&quot;&quot;.equals(title.trim())">
+  		and b.TITLE like concat('%',#{title},'%')
+  	</if>
+  	<if test="category != null">
+  		and b.CATEGORY_ID = #{category}
+  	</if>
+  	<if test="startDate!=null">  
+   		AND b.PUBLISH_TIME <![CDATA[>=]]> #{startDate}  
+	</if>
+	<if test="endDate!=null">  
+    	AND b.PUBLISH_TIME <![CDATA[<=]]> #{endDate}  
+	</if>
+  </sql>
+  
+  <sql id="Blob_Column_List" >
+    CONTENT
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+   select a.*, b.NICKNAME,c.CATEGORY_NAME as categoryName
+  	from question a left join user b on a.USER_ID = b.USER_ID 
+  	left join question_category c on a.CATEGORY_ID = c.CATEGORY_ID
+    where QUESTION_ID = #{questionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from question
+    where QUESTION_ID = #{questionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Question" >
+    insert into question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="questionId != null" >
+        QUESTION_ID,
+      </if>
+      <if test="categoryId != null" >
+        CATEGORY_ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME,
+      </if>
+      <if test="readTimes != null" >
+        READ_TIMES,
+      </if>
+      <if test="attentionTimes != null" >
+        ATTENTION_TIMES,
+      </if>
+      <if test="answerTimes != null" >
+        ANSWER_TIMES,
+      </if>
+      <if test="repostTimes != null" >
+        REPOST_TIMES,
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="questionId != null" >
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=BIGINT},
+      </if>
+      <if test="readTimes != null" >
+        #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="attentionTimes != null" >
+        #{attentionTimes,jdbcType=INTEGER},
+      </if>
+      <if test="answerTimes != null" >
+        #{answerTimes,jdbcType=INTEGER},
+      </if>
+      <if test="repostTimes != null" >
+        #{repostTimes,jdbcType=INTEGER},
+      </if>
+      <if test="showStatus != null" >
+        #{showStatus,jdbcType=TINYINT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Question" >
+    update question
+    <set >
+      <if test="categoryId != null" >
+        CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME = #{publishTime,jdbcType=BIGINT},
+      </if>
+      <if test="readTimes != null" >
+        READ_TIMES = #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="attentionTimes != null" >
+        ATTENTION_TIMES = #{attentionTimes,jdbcType=INTEGER},
+      </if>
+      <if test="answerTimes != null" >
+        ANSWER_TIMES = #{answerTimes,jdbcType=INTEGER},
+      </if>
+      <if test="repostTimes != null" >
+        REPOST_TIMES = #{repostTimes,jdbcType=INTEGER},
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS = #{showStatus,jdbcType=TINYINT},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where QUESTION_ID = #{questionId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 按条件查询记录总数 -->
+  <select id="selectTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from question a left join question_category c on a.CATEGORY_ID = c.CATEGORY_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	
+  </select>
+  
+  <!-- 按条件查询记录 -->
+  <select id="selectPageQuestion" parameterType="map" resultMap="BaseResultMap">
+  	select a.*, b.NICKNAME
+  	from question a left join user b on a.USER_ID = b.USER_ID left join question_category c on a.CATEGORY_ID = c.CATEGORY_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	order by a.QUESTION_ID desc
+  	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <!-- 修改记录显示状态 -->
+  <update id="modifyVisibility" parameterType="int">
+  	update question
+  	set SHOW_STATUS = (case when SHOW_STATUS = 0 then 1 else 0 end)
+  	where QUESTION_ID in
+  	<foreach collection="list" open="(" item="item" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </update>
+  
+  <!-- 批量删除记录 -->
+  <delete id="batchDelete" parameterType="int">
+  	delete from question
+  	where QUESTION_ID in
+  	<foreach collection="list" open="(" item="item" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+  
+  <!-- 查询热门问答记录总数 -->
+  <select id="selectHotQuestionTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from hot_question a left join question b on a.QUESTION_ID = b.QUESTION_ID
+  	<where>
+  		<include refid="whereConditionCategory"></include>
+  	</where>
+  </select>
+  
+  <!-- 按条件查询热门问题列表 -->
+  <select id="selectHotQuestionList" parameterType="map" resultMap="BaseResultMap">
+  	select a.ORDER_NUM, b.*, c.NICKNAME
+  	from hot_question a left join question b on a.QUESTION_ID = b.QUESTION_ID 
+  	left join user c on b.USER_ID = c.USER_ID
+  	<where>
+  		<include refid="whereConditionCategory"></include>
+  	</where>
+  	order by a.ORDER_NUM
+  	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+   <select id="selectAll" resultMap="BaseResultMap">
+    select QUESTION_ID as questionId , TITLE as title,CONTENT as content
+     from  question where 1=1 
+   </select>
+   
+    <select id="selectByIds" parameterType="list" resultMap="BaseResultMap">
+	  	select a.*, b.NICKNAME,c.CATEGORY_NAME as categoryName
+  	from question a left join user b on a.USER_ID = b.USER_ID 
+  	left join question_category c on a.CATEGORY_ID = c.CATEGORY_ID
+	  	where a.QUESTION_ID in
+		(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  		)
+	  	order by a.QUESTION_ID desc
+   </select>
+  
+</mapper>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IActivityEnrollDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.ActivityEnroll" >
+    <id column="ENROLL_ID" property="enrollId" jdbcType="INTEGER" />
+    <result column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="SEX" property="sex" jdbcType="INTEGER" />
+    <result column="REAL_NAME" property="realName" jdbcType="VARCHAR" />
+    <result column="PHONE_NUM" property="phoneNum" jdbcType="VARCHAR" />
+    <result column="EMAIL" property="email" jdbcType="VARCHAR" />
+    <result column="COMPANY" property="company" jdbcType="VARCHAR" />
+    <result column="POSITION" property="position" jdbcType="VARCHAR" />
+    <result column="ENROLL_TIME" property="enrollTime" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ENROLL_ID, CONTENT_ID, USER_ID,SEX, REAL_NAME, PHONE_NUM, EMAIL, COMPANY, POSITION, ENROLL_TIME
+  </sql>
+  
+   <sql id="whereCondition">
+     <if test="contentId != null ">
+  		and a.CONTENT_ID = #{contentId}
+  	</if>
+  	 <if test="title != null and !&quot;&quot;.equals(title.trim())">
+  		and b.TITLE like concat('%',#{title},'%')
+  	</if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from activity_enroll
+    where ENROLL_ID = #{enrollId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from activity_enroll
+    where ENROLL_ID = #{enrollId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.ActivityEnroll" >
+    insert into activity_enroll (ENROLL_ID, CONTENT_ID, USER_ID, 
+      REAL_NAME, PHONE_NUM, EMAIL, 
+      COMPANY, POSITION, ENROLL_TIME
+      )
+    values (#{enrollId,jdbcType=INTEGER}, #{contentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{realName,jdbcType=VARCHAR}, #{phoneNum,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, #{enrollTime,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.ActivityEnroll" >
+    insert into activity_enroll
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="enrollId != null" >
+        ENROLL_ID,
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+       <if test="sex != null" >
+        SEX,
+      </if>
+      <if test="realName != null" >
+        REAL_NAME,
+      </if>
+      <if test="phoneNum != null" >
+        PHONE_NUM,
+      </if>
+      <if test="email != null" >
+        EMAIL,
+      </if>
+      <if test="company != null" >
+        COMPANY,
+      </if>
+      <if test="position != null" >
+        POSITION,
+      </if>
+      <if test="enrollTime != null" >
+        ENROLL_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="enrollId != null" >
+        #{enrollId,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNum != null" >
+        #{phoneNum,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="enrollTime != null" >
+        #{enrollTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.ActivityEnroll" >
+    update activity_enroll
+    <set >
+      <if test="contentId != null" >
+        CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="sex != null" >
+       SEX =  #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="realName != null" >
+        REAL_NAME = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNum != null" >
+        PHONE_NUM = #{phoneNum,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        EMAIL = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        COMPANY = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        POSITION = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="enrollTime != null" >
+        ENROLL_TIME = #{enrollTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ENROLL_ID = #{enrollId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.ActivityEnroll" >
+    update activity_enroll
+    set CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      USER_ID = #{userId,jdbcType=INTEGER},
+      REAL_NAME = #{realName,jdbcType=VARCHAR},
+      PHONE_NUM = #{phoneNum,jdbcType=VARCHAR},
+      EMAIL = #{email,jdbcType=VARCHAR},
+      COMPANY = #{company,jdbcType=VARCHAR},
+      POSITION = #{position,jdbcType=VARCHAR},
+      ENROLL_TIME = #{enrollTime,jdbcType=BIGINT}
+    where ENROLL_ID = #{enrollId,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectPageList" parameterType="java.util.Map"  resultMap="BaseResultMap">
+    select a.ENROLL_ID, b.title,a.REAL_NAME,a.SEX, a.PHONE_NUM, 
+    a.EMAIL, a.COMPANY, a.POSITION, a.ENROLL_TIME
+    from activity_enroll a LEFT JOIN activity b 
+    on a.CONTENT_ID = b.CONTENT_ID
+    where 1=1
+       <include refid="whereCondition" ></include>
+  </select>
+    <!-- 根据ID，批量删除 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from activity_enroll
+  	where ENROLL_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+</mapper>

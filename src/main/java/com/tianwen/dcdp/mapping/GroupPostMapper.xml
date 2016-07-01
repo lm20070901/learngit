@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IGroupPostDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.GroupPost" >
+    <id column="POST_ID" property="postId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="GROUP_ID" property="groupId" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="PUBLISH_TIME" property="publishTime" jdbcType="BIGINT" />
+    <result column="READ_TIMES" property="readTimes" jdbcType="INTEGER" />
+    <result column="REPOST_TIMES" property="repostTimes" jdbcType="INTEGER" />
+    <result column="COMMENT_TIMES" property="commentTimes" jdbcType="INTEGER" />
+    <result column="FAVOURITE_TIMES" property="favouriteTimes" jdbcType="INTEGER" />
+    <result column="SHOW_STATUS" property="showStatus" jdbcType="TINYINT" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.tianwen.dcdp.pojo.GroupPost" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    POST_ID, USER_ID, GROUP_ID, TITLE, PUBLISH_TIME, READ_TIMES, REPOST_TIMES, COMMENT_TIMES, 
+    FAVOURITE_TIMES, SHOW_STATUS
+  </sql>
+  <sql id="A_Column_List" >
+    a.POST_ID, a.USER_ID, a.GROUP_ID, a.TITLE, a.PUBLISH_TIME, a.READ_TIMES, a.REPOST_TIMES, a.COMMENT_TIMES, 
+    a.FAVOURITE_TIMES, a.SHOW_STATUS
+  </sql>
+  <sql id="Blob_Column_List" >
+    CONTENT
+  </sql>
+  
+   <sql id="whereCondition">
+   	  <if test="title != null and !&quot;&quot;.equals(title.trim())" >
+        AND a.TITLE like concat('%', #{title,jdbcType=VARCHAR} ,'%')
+      </if>
+      <if test="groupId != null" >
+        AND a.GROUP_ID = #{groupId,jdbcType=INTEGER}
+      </if>
+      <if test="startDate!=null">  
+   		AND a.PUBLISH_TIME <![CDATA[>=]]> #{startDate}  
+	</if>
+	<if test="endDate!=null">  
+    	AND a.PUBLISH_TIME <![CDATA[<=]]> #{endDate}  
+	</if>
+   </sql>
+   
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from group_post
+    where POST_ID = #{postId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from group_post
+    where POST_ID = #{postId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.GroupPost" >
+    insert into group_post (POST_ID, USER_ID, GROUP_ID, 
+      TITLE, PUBLISH_TIME, READ_TIMES, 
+      REPOST_TIMES, COMMENT_TIMES, FAVOURITE_TIMES, 
+      SHOW_STATUS, CONTENT)
+    values (#{postId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{groupId,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{publishTime,jdbcType=BIGINT}, #{readTimes,jdbcType=INTEGER}, 
+      #{repostTimes,jdbcType=INTEGER}, #{commentTimes,jdbcType=INTEGER}, #{favouriteTimes,jdbcType=INTEGER}, 
+      #{showStatus,jdbcType=BIT}, #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.GroupPost" >
+    insert into group_post
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        POST_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="groupId != null" >
+        GROUP_ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME,
+      </if>
+      <if test="readTimes != null" >
+        READ_TIMES,
+      </if>
+      <if test="repostTimes != null" >
+        REPOST_TIMES,
+      </if>
+      <if test="commentTimes != null" >
+        COMMENT_TIMES,
+      </if>
+      <if test="favouriteTimes != null" >
+        FAVOURITE_TIMES,
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="postId != null" >
+        #{postId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null" >
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=BIGINT},
+      </if>
+      <if test="readTimes != null" >
+        #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="repostTimes != null" >
+        #{repostTimes,jdbcType=INTEGER},
+      </if>
+      <if test="commentTimes != null" >
+        #{commentTimes,jdbcType=INTEGER},
+      </if>
+      <if test="favouriteTimes != null" >
+        #{favouriteTimes,jdbcType=INTEGER},
+      </if>
+      <if test="showStatus != null" >
+        #{showStatus,jdbcType=BIT},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.GroupPost" >
+    update group_post
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="groupId != null" >
+        GROUP_ID = #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME = #{publishTime,jdbcType=BIGINT},
+      </if>
+      <if test="readTimes != null" >
+        READ_TIMES = #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="repostTimes != null" >
+        REPOST_TIMES = #{repostTimes,jdbcType=INTEGER},
+      </if>
+      <if test="commentTimes != null" >
+        COMMENT_TIMES = #{commentTimes,jdbcType=INTEGER},
+      </if>
+      <if test="favouriteTimes != null" >
+        FAVOURITE_TIMES = #{favouriteTimes,jdbcType=INTEGER},
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS = #{showStatus,jdbcType=BIT},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where POST_ID = #{postId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tianwen.dcdp.pojo.GroupPost" >
+    update group_post
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      GROUP_ID = #{groupId,jdbcType=INTEGER},
+      TITLE = #{title,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{publishTime,jdbcType=BIGINT},
+      READ_TIMES = #{readTimes,jdbcType=INTEGER},
+      REPOST_TIMES = #{repostTimes,jdbcType=INTEGER},
+      COMMENT_TIMES = #{commentTimes,jdbcType=INTEGER},
+      FAVOURITE_TIMES = #{favouriteTimes,jdbcType=INTEGER},
+      SHOW_STATUS = #{showStatus,jdbcType=BIT},
+      CONTENT = #{content,jdbcType=LONGVARCHAR}
+    where POST_ID = #{postId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.GroupPost" >
+    update group_post
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      GROUP_ID = #{groupId,jdbcType=INTEGER},
+      TITLE = #{title,jdbcType=VARCHAR},
+      PUBLISH_TIME = #{publishTime,jdbcType=BIGINT},
+      READ_TIMES = #{readTimes,jdbcType=INTEGER},
+      REPOST_TIMES = #{repostTimes,jdbcType=INTEGER},
+      COMMENT_TIMES = #{commentTimes,jdbcType=INTEGER},
+      FAVOURITE_TIMES = #{favouriteTimes,jdbcType=INTEGER},
+      SHOW_STATUS = #{showStatus,jdbcType=BIT}
+    where POST_ID = #{postId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectList" resultMap="ResultMapWithBLOBs" parameterType="map" >
+    select 
+    <include refid="A_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    ,b.NICKNAME as userName,c.GROUP_NAME as groupName
+    from group_post a 
+    LEFT JOIN user b on a.USER_ID = b.USER_ID 
+    LEFT JOIN groups c on a.GROUP_ID = c.GROUP_ID
+    <where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <select id="selectCountList" resultType="int" parameterType="map" >
+    select 
+    count(1)
+    from group_post a 
+    LEFT JOIN user b on a.USER_ID = b.USER_ID 
+    LEFT JOIN groups c on a.GROUP_ID = c.GROUP_ID
+    <where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+     <!-- 根据ID，批量隐藏/显示 -->
+  <update id="updateState" >
+  	update group_post 
+  	set SHOW_STATUS = #{value}
+  	where POST_ID in(
+  		<foreach collection="ids" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </update>
+  
+  <!-- 根据ID，批量删除 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from group_post
+  	where POST_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+</mapper>

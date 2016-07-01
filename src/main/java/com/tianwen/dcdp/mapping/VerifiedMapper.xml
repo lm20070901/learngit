@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianwen.dcdp.dao.IVerifiedDao">
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Verified">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="USER_ID" jdbcType="INTEGER" property="userId" />
+    <result column="VERIFY_TYPE" jdbcType="INTEGER" property="verifyType" />
+    <result column="IDCARD" jdbcType="VARCHAR" property="idcard" />
+    <result column="AUTHINFO" jdbcType="VARCHAR" property="authinfo" />
+    <result column="PHONENUM" jdbcType="VARCHAR" property="phonenum" />
+    <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+    <result column="QQ" jdbcType="VARCHAR" property="qq" />
+    <result column="REALNAME" jdbcType="VARCHAR" property="realname" />
+    <result column="STATUS" jdbcType="SMALLINT" property="status" />
+    <result column="AUDIT_REMARK" jdbcType="VARCHAR" property="auditRemark" />
+    <result column="APPLY_TIME" jdbcType="BIGINT" property="applyTime" />
+    <result column="IDCARD_IMG1" jdbcType="VARCHAR" property="idcardImg1" />
+    <result column="IDCARD_IMG2" jdbcType="VARCHAR" property="idcardImg2" />
+    <result column="CONCERN_INDUSTRY" jdbcType="VARCHAR" property="concernIndustry" />
+    <result column="ANNUAL_INCOME" jdbcType="INTEGER" property="annualIncome" />
+    <result column="ASSETS" jdbcType="VARCHAR" property="assets" />
+    <result column="PROJECT_NAME" jdbcType="VARCHAR" property="projectName" />
+    <result column="INDUSTRY" jdbcType="VARCHAR" property="industry" />
+    <result column="PROVINCE" jdbcType="VARCHAR" property="province" />
+    <result column="PROJECT_STAGE" jdbcType="VARCHAR" property="projectStage" />
+    <result column="AUDITOR_ID" jdbcType="INTEGER" property="auditorId" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ID, USER_ID, VERIFY_TYPE, IDCARD, AUTHINFO, PHONENUM, ADDRESS, QQ, REALNAME, STATUS, 
+    AUDIT_REMARK, APPLY_TIME, IDCARD_IMG1, IDCARD_IMG2, CONCERN_INDUSTRY, ANNUAL_INCOME, 
+    ASSETS, PROJECT_NAME, INDUSTRY, PROVINCE, PROJECT_STAGE, AUDITOR_ID
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from verified
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from verified
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.Verified">
+    insert into verified (ID, USER_ID, VERIFY_TYPE, 
+      IDCARD, AUTHINFO, PHONENUM, 
+      ADDRESS, QQ, REALNAME, 
+      STATUS, AUDIT_REMARK, APPLY_TIME, 
+      IDCARD_IMG1, IDCARD_IMG2, CONCERN_INDUSTRY, 
+      ANNUAL_INCOME, ASSETS, PROJECT_NAME, 
+      INDUSTRY, PROVINCE, PROJECT_STAGE, 
+      AUDITOR_ID)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{verifyType,jdbcType=INTEGER}, 
+      #{idcard,jdbcType=VARCHAR}, #{authinfo,jdbcType=VARCHAR}, #{phonenum,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{qq,jdbcType=VARCHAR}, #{realname,jdbcType=VARCHAR}, 
+      #{status,jdbcType=SMALLINT}, #{auditRemark,jdbcType=VARCHAR}, #{applyTime,jdbcType=BIGINT}, 
+      #{idcardImg1,jdbcType=VARCHAR}, #{idcardImg2,jdbcType=VARCHAR}, #{concernIndustry,jdbcType=VARCHAR}, 
+      #{annualIncome,jdbcType=INTEGER}, #{assets,jdbcType=VARCHAR}, #{projectName,jdbcType=VARCHAR}, 
+      #{industry,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{projectStage,jdbcType=VARCHAR}, 
+      #{auditorId,jdbcType=INTEGER})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Verified">
+    insert into verified
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="verifyType != null">
+        VERIFY_TYPE,
+      </if>
+      <if test="idcard != null">
+        IDCARD,
+      </if>
+      <if test="authinfo != null">
+        AUTHINFO,
+      </if>
+      <if test="phonenum != null">
+        PHONENUM,
+      </if>
+      <if test="address != null">
+        ADDRESS,
+      </if>
+      <if test="qq != null">
+        QQ,
+      </if>
+      <if test="realname != null">
+        REALNAME,
+      </if>
+      <if test="status != null">
+        STATUS,
+      </if>
+      <if test="auditRemark != null">
+        AUDIT_REMARK,
+      </if>
+      <if test="applyTime != null">
+        APPLY_TIME,
+      </if>
+      <if test="idcardImg1 != null">
+        IDCARD_IMG1,
+      </if>
+      <if test="idcardImg2 != null">
+        IDCARD_IMG2,
+      </if>
+      <if test="concernIndustry != null">
+        CONCERN_INDUSTRY,
+      </if>
+      <if test="annualIncome != null">
+        ANNUAL_INCOME,
+      </if>
+      <if test="assets != null">
+        ASSETS,
+      </if>
+      <if test="projectName != null">
+        PROJECT_NAME,
+      </if>
+      <if test="industry != null">
+        INDUSTRY,
+      </if>
+      <if test="province != null">
+        PROVINCE,
+      </if>
+      <if test="projectStage != null">
+        PROJECT_STAGE,
+      </if>
+      <if test="auditorId != null">
+        AUDITOR_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="verifyType != null">
+        #{verifyType,jdbcType=INTEGER},
+      </if>
+      <if test="idcard != null">
+        #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="authinfo != null">
+        #{authinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="phonenum != null">
+        #{phonenum,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="auditRemark != null">
+        #{auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null">
+        #{applyTime,jdbcType=BIGINT},
+      </if>
+      <if test="idcardImg1 != null">
+        #{idcardImg1,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardImg2 != null">
+        #{idcardImg2,jdbcType=VARCHAR},
+      </if>
+      <if test="concernIndustry != null">
+        #{concernIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="annualIncome != null">
+        #{annualIncome,jdbcType=INTEGER},
+      </if>
+      <if test="assets != null">
+        #{assets,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null">
+        #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="projectStage != null">
+        #{projectStage,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorId != null">
+        #{auditorId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Verified">
+    update verified
+    <set>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="verifyType != null">
+        VERIFY_TYPE = #{verifyType,jdbcType=INTEGER},
+      </if>
+      <if test="idcard != null">
+        IDCARD = #{idcard,jdbcType=VARCHAR},
+      </if>
+      <if test="authinfo != null">
+        AUTHINFO = #{authinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="phonenum != null">
+        PHONENUM = #{phonenum,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        ADDRESS = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="qq != null">
+        QQ = #{qq,jdbcType=VARCHAR},
+      </if>
+      <if test="realname != null">
+        REALNAME = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS = #{status,jdbcType=SMALLINT},
+      </if>
+      <if test="auditRemark != null">
+        AUDIT_REMARK = #{auditRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != null">
+        APPLY_TIME = #{applyTime,jdbcType=BIGINT},
+      </if>
+      <if test="idcardImg1 != null">
+        IDCARD_IMG1 = #{idcardImg1,jdbcType=VARCHAR},
+      </if>
+      <if test="idcardImg2 != null">
+        IDCARD_IMG2 = #{idcardImg2,jdbcType=VARCHAR},
+      </if>
+      <if test="concernIndustry != null">
+        CONCERN_INDUSTRY = #{concernIndustry,jdbcType=VARCHAR},
+      </if>
+      <if test="annualIncome != null">
+        ANNUAL_INCOME = #{annualIncome,jdbcType=INTEGER},
+      </if>
+      <if test="assets != null">
+        ASSETS = #{assets,jdbcType=VARCHAR},
+      </if>
+      <if test="projectName != null">
+        PROJECT_NAME = #{projectName,jdbcType=VARCHAR},
+      </if>
+      <if test="industry != null">
+        INDUSTRY = #{industry,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        PROVINCE = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="projectStage != null">
+        PROJECT_STAGE = #{projectStage,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorId != null">
+        AUDITOR_ID = #{auditorId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Verified">
+    update verified
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      VERIFY_TYPE = #{verifyType,jdbcType=INTEGER},
+      IDCARD = #{idcard,jdbcType=VARCHAR},
+      AUTHINFO = #{authinfo,jdbcType=VARCHAR},
+      PHONENUM = #{phonenum,jdbcType=VARCHAR},
+      ADDRESS = #{address,jdbcType=VARCHAR},
+      QQ = #{qq,jdbcType=VARCHAR},
+      REALNAME = #{realname,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=SMALLINT},
+      AUDIT_REMARK = #{auditRemark,jdbcType=VARCHAR},
+      APPLY_TIME = #{applyTime,jdbcType=BIGINT},
+      IDCARD_IMG1 = #{idcardImg1,jdbcType=VARCHAR},
+      IDCARD_IMG2 = #{idcardImg2,jdbcType=VARCHAR},
+      CONCERN_INDUSTRY = #{concernIndustry,jdbcType=VARCHAR},
+      ANNUAL_INCOME = #{annualIncome,jdbcType=INTEGER},
+      ASSETS = #{assets,jdbcType=VARCHAR},
+      PROJECT_NAME = #{projectName,jdbcType=VARCHAR},
+      INDUSTRY = #{industry,jdbcType=VARCHAR},
+      PROVINCE = #{province,jdbcType=VARCHAR},
+      PROJECT_STAGE = #{projectStage,jdbcType=VARCHAR},
+      AUDITOR_ID = #{auditorId,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+ 
+  
+  
+	<!--获取认证信息  -->
+	<select id="getVerifiedInfo" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select  <include refid="Base_Column_List" />
+		
+		from VERIFIED where USER_ID=#{userId}
+	</select>
+	
+	<!--保存认证信息  -->
+	<update id="saveVerifiedInfo" parameterType="com.tianwen.dcdp.pojo.Verified">
+		update VERIFIED 
+		<set>
+			<if test="idcard != null and idcard!=''">
+					IDCARD = #{idcard},
+			</if>
+			<if test="authinfo != null and !&quot;&quot;.equals(authinfo.trim())">
+					AUTHINFO = trim(#{authinfo}),
+			</if>
+			<if test="phonenum != null and !&quot;&quot;.equals(phonenum.trim())">
+					PHONENUM = #{phonenum},
+			</if>
+			<if test="address != null and !&quot;&quot;.equals(address.trim())">
+					ADDRESS = trim(#{address}),
+			</if>
+			<if test="qq != null and !&quot;&quot;.equals(qq.trim())">
+					QQ = #{qq},
+			</if>
+			<if test="realname != null and !&quot;&quot;.equals(realname.trim())">
+					REALNAME = trim(#{realname}),
+			</if>
+			<if test="status != null and status!='' ">
+					STATUS = #{status},
+			</if>
+			<if test="auditRemark != null and !&quot;&quot;.equals(auditRemark.trim())">
+					AUDIT_REMARK = trim(#{auditRemark}),
+			</if>
+			<if test="auditorId != null and auditorId >=0">
+					AUDITOR_ID = #{auditorId}
+			</if>
+			
+		</set>
+		where 1 = 1  
+			<if test="userId != null and userId!=''">
+				and  USER_ID = #{userId}
+			</if>
+			<if test="id != null and id!=''">
+				and  ID = #{id}
+			</if>
+	</update>
+	
+	
+	
+	<!-- 查询认证列表 -->
+	<select id="getByPage" parameterType="java.util.Map" resultType="java.util.Map">
+		select 
+		 	 v.authinfo AS authinfo,
+			 v.idcard_img1 AS idcardImg1,
+			 v.STATUS AS status,
+			 v.idcard_img2 AS idcardImg2,
+			 v.idcard AS idcard,
+			 v.apply_time AS applyTime,
+			 v.project_stage AS projectStage,
+			 v.verify_type AS verifyType,
+			 v.id AS id,
+			 v.assets AS assets,
+			 v.annual_income AS annualIncome,
+			 v.concern_industry AS concernIndustry,
+			 v.address AS address,
+			 v.user_id AS userId,
+			 v.province AS province,
+			 v.realname AS realname,
+			 v.industry AS industry,
+			 v.phonenum AS phonenum,
+			 v.project_name AS projectName,
+			 v.qq AS qq,
+			 v.audit_remark AS auditRemark,
+			 v.AUDITOR_ID AS auditorId,
+		 	 u.NICKNAME as nickName,
+		 	 u.USER_NAME as userName,
+		 	 (select a.USER_NAME  from admin a where a.USER_ID=v.AUDITOR_ID ) AS   auditorName 
+			FROM VERIFIED  v left join USER u on v.USER_ID=u.USER_ID 
+			<where>
+				<if test="nickName != null and !&quot;&quot;.equals(nickName.trim())">
+					  u.NICKNAME like CONCAT('%',trim(#{nickName}),'%')
+				</if>
+				<if test="userName != null and !&quot;&quot;.equals(userName.trim())">
+					and  u.USER_NAME like CONCAT('%',trim(#{userName}),'%')
+				</if>
+				<if test="verifyType != null or verifyType==0">
+					and  v.VERIFY_TYPE = #{verifyType,jdbcType=INTEGER}
+				</if>
+				<if test="status != null or status == 0">
+					and  v.STATUS = #{status,jdbcType=SMALLINT}
+				</if>
+			</where>  
+			order by v.id desc 
+	</select>
+		
+		
+	
+	<!-- 查询认证详情 -->
+	<select id="queryVerifiedDetail" parameterType="java.lang.Integer" resultType="java.util.Map">
+	
+			select 
+		 	 v.authinfo AS authinfo,
+			 v.idcard_img1 AS idcardImg1,
+			 v.STATUS AS status,
+			 v.idcard_img2 AS idcardImg2,
+			 v.idcard AS idcard,
+			 v.apply_time AS applyTime,
+			 v.project_stage AS projectStage,
+			 v.verify_type AS verifyType,
+			 v.id AS id,
+			 v.assets AS assets,
+			 v.annual_income AS annualIncome,
+			 v.concern_industry AS concernIndustry,
+			 v.address AS address,
+			 v.user_id AS userId,
+			 v.province AS province,
+			 v.realname AS realname,
+			 v.industry AS industry,
+			 v.phonenum AS phonenum,
+			 v.project_name AS projectName,
+			 v.qq AS qq,
+			 v.audit_remark AS auditRemark,
+			 v.AUDITOR_ID AS auditorId,
+			 u.NICKNAME as nickName,
+			 u.USER_NAME as userName,
+			 (select a.USER_NAME  from admin a where a.USER_ID=v.AUDITOR_ID ) AS   auditorName 
+			FROM VERIFIED  v left join USER u on v.USER_ID=u.USER_ID 
+			where  id =  #{id}
+	</select>
+	
+</mapper>

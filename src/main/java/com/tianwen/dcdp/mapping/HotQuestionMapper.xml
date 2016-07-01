@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IHotQuestionDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.HotQuestion" >
+    <result column="QUESTION_ID" property="questionId" jdbcType="INTEGER" />
+    <result column="ORDER_NUM" property="orderNum" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR"/>
+  </resultMap>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.HotQuestion" >
+    insert into hot_question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="questionId != null" >
+        QUESTION_ID,
+      </if>
+      <if test="orderNum != null" >
+        ORDER_NUM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="questionId != null" >
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="orderNum != null" >
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 更新信息 -->
+  <update id="updateSelective" parameterType="com.tianwen.dcdp.pojo.HotQuestion">
+  	update hot_question
+  	set ORDER_NUM = #{orderNum,jdbcType=INTEGER}
+  	where QUESTION_ID = #{questionId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 批量删除热门问题 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from hot_question
+  	where QUESTION_ID in
+  	<foreach collection="list" open="(" separator="," close=")" item="item">
+  		#{item}
+  	</foreach>
+  </delete>
+  
+  <!-- 根据ID，查询热门问题记录 -->
+  <select id="selectHotQuestionWithTitleById" parameterType="int" resultMap="BaseResultMap">
+  	select a.*, b.TITLE
+  	from hot_question a left join question b on a.QUESTION_ID = b.QUESTION_ID
+  	where a.QUESTION_ID = #{id}
+  </select>
+</mapper>

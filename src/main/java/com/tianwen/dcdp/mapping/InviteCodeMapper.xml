@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IInviteCodeDao">
+	<resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.InviteCode">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="INVITECODE" property="inviteCode" jdbcType="VARCHAR" />
+		<result column="TIMELINE" property="timeLine" jdbcType="BIGINT" />
+		<result column="ISUSED" property="isUsed" jdbcType="BIT" />
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="VOTE_ID" property="voteId" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, INVITECODE, TIMELINE, ISUSED, USER_NAME,VOTE_ID
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from invitecode
+		where ID = #{id,jdbcType=INTEGER}
+	</select>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from invitecode
+		where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	
+	<insert id="insert" parameterType="com.tianwen.dcdp.pojo.InviteCode">
+		insert into 
+		invitecode (
+		ID, 
+		INVITECODE,
+		TIMELINE,
+		ISUSED,
+		USER_NAME,
+		VOTE_ID
+		)
+		values (
+		#{id,jdbcType=INTEGER},
+		#{inviteCode,jdbcType=VARCHAR},
+		#{timeLine,jdbcType=INTEGER},
+		#{isUsed,jdbcType=BIT}, 
+		#{userName,jdbcType=VARCHAR},
+		#{voteId,jdbcType=INTEGER}
+		)
+	</insert>
+	
+	
+	<insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.InviteCode">
+		insert into invitecode
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="inviteCode != null">
+				INVITECODE,
+			</if>
+			<if test="timeLine != null">
+				TIMELINE,
+			</if>
+			<if test="isUsed != null">
+				ISUSED,
+			</if>
+			<if test="userName != null">
+				USER_NAME,
+			</if>
+			<if test="voteId != null">
+				VOTE_ID,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="invitecode != null">
+				#{inviteCode,jdbcType=VARCHAR},
+			</if>
+			<if test="timeline != null">
+				#{timeLine,jdbcType=INTEGER},
+			</if>
+			<if test="isused != null">
+				#{isUsed,jdbcType=BIT},
+			</if>
+			<if test="userName != null">
+				#{userName,jdbcType=VARCHAR},
+			</if>
+			<if test="voteId != null">
+				#{voteId,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	
+	
+	<!-- 批量插邀请 -->
+	<insert id="batchAddInviteCode" parameterType="java.util.List" >
+		insert into 
+		invitecode 
+		(
+		INVITECODE,
+		TIMELINE,
+		ISUSED,
+		VOTE_ID
+		) 
+		values
+		<foreach collection="list" item="invite" separator=",">
+			(
+			#{invite.inviteCode,jdbcType=VARCHAR},
+			#{invite.timeLine,jdbcType=INTEGER},
+			#{invite.isUsed,jdbcType=BIT},
+			#{invite.voteId,jdbcType=INTEGER}
+			)
+		</foreach>	
+	</insert>
+	
+	<!-- 统计邀请码数量 -->
+	<select id="countInviteCodeNum" parameterType="java.util.Map" resultType="int">
+		select
+		count(*)
+		from invitecode
+		<where>
+			<if test="voteId!=null and voteId!=''">
+				VOTE_ID = #{voteId,jdbcType=INTEGER}
+			</if>
+			<if test="inviteCode!=null and inviteCode!=''">
+				AND  INVITECODE  like   concat('%',TRIM(#{inviteCode,jdbcType=VARCHAR}),'%')
+			</if>
+			<if test="isUsed!=null or isUsed==0">
+				AND  ISUSED  =  #{isUsed,jdbcType=BIT}
+			</if>
+			<if test="userName!=null and userName!=''">
+				AND  USER_NAME  like   concat('%',TRIM(#{userName,jdbcType=VARCHAR}),'%')
+			</if>
+			<if test="startDate!=null and !&quot;&quot;.equals(startDate.trim())">  
+   				AND TIMELINE <![CDATA[>=]]>  unix_timestamp(#{startDate})*1000
+			</if>
+			<if test="endDate!=null and !&quot;&quot;.equals(endDate.trim())">  
+    			AND TIMELINE <![CDATA[<=]]>unix_timestamp(#{endDate})*1000 
+			</if>
+		</where>  
+	</select>
+	
+	<!-- 邀请码列表 -->
+	<select id="getInviteCodeList" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from invitecode
+		<where>
+			<if test="voteId!=null and voteId!=''">
+				VOTE_ID = #{voteId,jdbcType=INTEGER}
+			</if>
+			<if test="inviteCode!=null and inviteCode!=''">
+				AND  INVITECODE  like   concat('%',TRIM(#{inviteCode,jdbcType=VARCHAR}),'%')
+			</if>
+			<if test="isUsed!=null or isUsed==0 ">
+				AND  ISUSED  =  #{isUsed,jdbcType=BIT}
+			</if>
+			<if test="userName!=null and userName!=''">
+				AND  USER_NAME  like   concat('%',TRIM(#{userName,jdbcType=VARCHAR}),'%')
+			</if>
+			<if test="startDate!=null and !&quot;&quot;.equals(startDate.trim())">  
+   				AND TIMELINE <![CDATA[>=]]>  unix_timestamp(#{startDate})*1000
+			</if>
+			<if test="endDate!=null and !&quot;&quot;.equals(endDate.trim())">  
+    			AND TIMELINE <![CDATA[<=]]>unix_timestamp(#{endDate})*1000 
+			</if>
+		</where>   order by ID desc 
+		<if test="start!=null and size!=null">  
+			LIMIT #{start},#{size}
+		</if>
+	</select>
+	
+	<!-- 删除邀请码 -->
+	<delete id="deleteInviteCodeByIds" parameterType="java.util.List">
+	
+		DELETE   from invitecode	where ID in 
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+		
+	</delete>
+	
+	<!-- 更新邀请码 非空字段 -->
+	<update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.InviteCode">
+		update invitecode
+		<set>
+			<if test="inviteCode != null  and  inviteCode!=''">
+				INVITECODE = #{inviteCode,jdbcType=VARCHAR},
+			</if>
+			<if test="timeLine != null and timeLine!=''">
+				TIMELINE = #{timeLine,jdbcType=BIGINT},
+			</if>
+			<if test="isUsed != null">
+				ISUSED = #{isUsed,jdbcType=BIT},
+			</if>
+			<if test="userName != null">
+				USER_NAME = #{userName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+
+</mapper>

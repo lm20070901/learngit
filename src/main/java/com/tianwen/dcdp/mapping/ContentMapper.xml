@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IContentDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Content" >
+    <id column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="POSTTIME" property="postTime" jdbcType="BIGINT" />
+    <result column="TYPE" property="type" jdbcType="VARCHAR" />
+    <result column="FILETYPE" property="filetype" jdbcType="INTEGER" />
+    <result column="RETID" property="retid" jdbcType="INTEGER" />
+    <result column="REPLYID" property="replyid" jdbcType="INTEGER" />
+    <result column="REPLYTIMES" property="replytimes" jdbcType="SMALLINT" />
+    <result column="ZFTIMES" property="zftimes" jdbcType="SMALLINT" />
+    <result column="PINBI" property="pinbi" jdbcType="BIT" />
+    <result column="ZHIDING" property="zhiding" jdbcType="BIT" />
+    <result column="PRAISETIMES" property="praisetimes" jdbcType="SMALLINT" />
+    <result column="NIKENAME" property="nikeName" jdbcType="VARCHAR"/>
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+    <result column="SHOW_STATUS" property="showStatus" jdbcType="INTEGER"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.tianwen.dcdp.pojo.Content" extends="BaseResultMap" >
+    <result column="CONTENT_BODY" property="contentBody" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CONTENT_ID, USER_ID, POSTTIME, TYPE, FILETYPE, RETID, REPLYID, REPLYTIMES, ZFTIMES, 
+    PINBI, ZHIDING, PRAISETIMES
+  </sql>
+  
+  <sql id="whereCondition">
+  	<if test="content != null and !&quot;&quot;.equals(content.trim())">
+  		and a.CONTENT_BODY like concat('%',#{content},'%')
+  	</if>
+  	<if test="userId != null and !&quot;&quot;.equals(userId.trim())">
+  		and a.USER_ID = #{userId}
+  	</if>
+  	<if test="nickName != null and !&quot;&quot;.equals(nickName.trim())">
+  		and b.NICKNAME like concat('%',#{nickName},'%')
+  	</if>
+  	<if test="startDate!=null and !&quot;&quot;.equals(startDate.trim())">  
+   		AND a.POSTTIME <![CDATA[>=]]>  unix_timestamp(#{startDate})*1000
+	</if>
+	<if test="endDate!=null and !&quot;&quot;.equals(endDate.trim())">  
+    	AND a.POSTTIME <![CDATA[<=]]>unix_timestamp(#{endDate})*1000 
+	</if>
+  </sql>
+  
+  <sql id="Blob_Column_List" >
+    CONTENT_BODY
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from content
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from content
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.Content" >
+    insert into content (CONTENT_ID, USER_ID, POSTTIME, 
+      TYPE, FILETYPE, RETID, 
+      REPLYID, REPLYTIMES, ZFTIMES, 
+      PINBI, ZHIDING, PRAISETIMES, 
+      CONTENT_BODY)
+    values (#{contentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{postTime,jdbcType=BIGINT}, 
+      #{type,jdbcType=VARCHAR}, #{filetype,jdbcType=INTEGER}, #{retid,jdbcType=INTEGER}, 
+      #{replyid,jdbcType=INTEGER}, #{replytimes,jdbcType=SMALLINT}, #{zftimes,jdbcType=SMALLINT}, 
+      #{pinbi,jdbcType=BIT}, #{zhiding,jdbcType=BIT}, #{praisetimes,jdbcType=SMALLINT}, 
+      #{contentBody,jdbcType=LONGVARCHAR})
+  </insert>
+  
+  
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Content" >
+    insert into content
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="contentId != null" >
+        CONTENT_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="postTime != null" >
+        POSTTIME,
+      </if>
+      <if test="type != null" >
+        TYPE,
+      </if>
+      <if test="filetype != null" >
+        FILETYPE,
+      </if>
+      <if test="retid != null" >
+        RETID,
+      </if>
+      <if test="replyid != null" >
+        REPLYID,
+      </if>
+      <if test="replytimes != null" >
+        REPLYTIMES,
+      </if>
+      <if test="zftimes != null" >
+        ZFTIMES,
+      </if>
+      <if test="pinbi != null" >
+        PINBI,
+      </if>
+      <if test="zhiding != null" >
+        ZHIDING,
+      </if>
+      <if test="praisetimes != null" >
+        PRAISETIMES,
+      </if>
+      <if test="contentBody != null" >
+        CONTENT_BODY,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="postTime != null" >
+        #{postTime,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="filetype != null" >
+        #{filetype,jdbcType=INTEGER},
+      </if>
+      <if test="retid != null" >
+        #{retid,jdbcType=INTEGER},
+      </if>
+      <if test="replyid != null" >
+        #{replyid,jdbcType=INTEGER},
+      </if>
+      <if test="replytimes != null" >
+        #{replytimes,jdbcType=SMALLINT},
+      </if>
+      <if test="zftimes != null" >
+        #{zftimes,jdbcType=SMALLINT},
+      </if>
+      <if test="pinbi != null" >
+        #{pinbi,jdbcType=BIT},
+      </if>
+      <if test="zhiding != null" >
+        #{zhiding,jdbcType=BIT},
+      </if>
+      <if test="praisetimes != null" >
+        #{praisetimes,jdbcType=SMALLINT},
+      </if>
+      <if test="contentBody != null" >
+        #{contentBody,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Content" >
+    update content
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="postTime != null" >
+        POSTTIME = #{postTime,jdbcType=BIGINT},
+      </if>
+      <if test="type != null" >
+        TYPE = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="filetype != null" >
+        FILETYPE = #{filetype,jdbcType=INTEGER},
+      </if>
+      <if test="retid != null" >
+        RETID = #{retid,jdbcType=INTEGER},
+      </if>
+      <if test="replyid != null" >
+        REPLYID = #{replyid,jdbcType=INTEGER},
+      </if>
+      <if test="replytimes != null" >
+        REPLYTIMES = #{replytimes,jdbcType=SMALLINT},
+      </if>
+      <if test="zftimes != null" >
+        ZFTIMES = #{zftimes,jdbcType=SMALLINT},
+      </if>
+      <if test="pinbi != null" >
+        PINBI = #{pinbi,jdbcType=BIT},
+      </if>
+      <if test="zhiding != null" >
+        ZHIDING = #{zhiding,jdbcType=BIT},
+      </if>
+      <if test="praisetimes != null" >
+        PRAISETIMES = #{praisetimes,jdbcType=SMALLINT},
+      </if>
+      <if test="contentBody != null" >
+        CONTENT_BODY = #{contentBody,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tianwen.dcdp.pojo.Content" >
+    update content
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      POSTTIME = #{postTime,jdbcType=BIGINT},
+      TYPE = #{type,jdbcType=VARCHAR},
+      FILETYPE = #{filetype,jdbcType=INTEGER},
+      RETID = #{retid,jdbcType=INTEGER},
+      REPLYID = #{replyid,jdbcType=INTEGER},
+      REPLYTIMES = #{replytimes,jdbcType=SMALLINT},
+      ZFTIMES = #{zftimes,jdbcType=SMALLINT},
+      PINBI = #{pinbi,jdbcType=BIT},
+      ZHIDING = #{zhiding,jdbcType=BIT},
+      PRAISETIMES = #{praisetimes,jdbcType=SMALLINT},
+      CONTENT_BODY = #{contentBody,jdbcType=LONGVARCHAR}
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Content" >
+    update content
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      POSTTIME = #{postTime,jdbcType=BIGINT},
+      TYPE = #{type,jdbcType=VARCHAR},
+      FILETYPE = #{filetype,jdbcType=INTEGER},
+      RETID = #{retid,jdbcType=INTEGER},
+      REPLYID = #{replyid,jdbcType=INTEGER},
+      REPLYTIMES = #{replytimes,jdbcType=SMALLINT},
+      ZFTIMES = #{zftimes,jdbcType=SMALLINT},
+      PINBI = #{pinbi,jdbcType=BIT},
+      ZHIDING = #{zhiding,jdbcType=BIT},
+      PRAISETIMES = #{praisetimes,jdbcType=SMALLINT}
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from content a left join user b on a.USER_ID = b.USER_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <select id="selectByPage" parameterType="map" resultMap="ResultMapWithBLOBs">
+  	select a.*,b.NICKNAME ,b.USER_NAME
+  	from content a left join user b on a.USER_ID = b.USER_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <!-- 删除动态 -->
+  <delete id="deleteContentByIds"  parameterType = "java.util.List">
+	delete from content where CONTENT_ID IN
+	<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+		#{item}
+	</foreach>
+  </delete>
+  
+  <!--更新动态显示状态  -->
+  <update id="updateContentsStatus"  parameterType = "java.util.List" >
+  		UPDATE   content SET 
+         SHOW_STATUS = (case when SHOW_STATUS=0 then 1 else 0 end)   <!--  根据字段值 自动更改 -->
+      WHERE CONTENT_ID IN 
+  	<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+		#{item}
+	</foreach>
+  </update>
+  
+  <select id="selectAll" resultMap="ResultMapWithBLOBs">
+    select CONTENT_BODY as contentBody , CONTENT_ID as contentId
+     from  content where 1=1 
+   </select>
+   
+    <select id="selectByIds" parameterType="list" resultMap="ResultMapWithBLOBs">
+	   select a.*,b.NICKNAME ,b.USER_NAME
+  	from content a left join user b on a.USER_ID = b.USER_ID
+	  	where a.CONTENT_ID in
+		(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  		)
+	  	order by a.CONTENT_ID desc
+   </select>
+  
+</mapper>

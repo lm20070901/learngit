@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IGroupPostCommentDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.GroupPostComment" >
+    <id column="COMMENT_ID" property="commentId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="REPLY_COMMENT_ID" property="replyCommentId" jdbcType="INTEGER" />
+    <result column="COMMENT_UID" property="commentUid" jdbcType="INTEGER" />
+    <result column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+    <result column="COMMENT_BODY" property="commentBody" jdbcType="VARCHAR" />
+    <result column="DATELINE" property="dateline" jdbcType="BIGINT" />
+    <result column="IS_READ" property="isRead" jdbcType="TINYINT" />
+    <result column="SHOW_STATUS" property="showStatus" jdbcType="TINYINT" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="NICK_NAME" property="nickName" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    COMMENT_ID, USER_ID, REPLY_COMMENT_ID, COMMENT_UID, CONTENT_ID, COMMENT_BODY, DATELINE, 
+    IS_READ, SHOW_STATUS
+  </sql>
+  <sql id="A_Column_List" >
+    a.COMMENT_ID, a.USER_ID, a.REPLY_COMMENT_ID, a.COMMENT_UID, a.CONTENT_ID, a.COMMENT_BODY, a.DATELINE, 
+    a.IS_READ, a.SHOW_STATUS
+  </sql>
+   <sql id="whereCondition">
+    <if test="commentId != null" >
+        AND a.COMMENT_ID = #{commentId,jdbcType=INTEGER}
+      </if>
+   	  <if test="commentBody != null and !&quot;&quot;.equals(commentBody.trim())" >
+        AND a.COMMENT_BODY like concat('%', #{commentBody,jdbcType=VARCHAR} ,'%')
+      </if>
+      <if test="userName != null and !&quot;&quot;.equals(userName.trim())" >
+        AND b.NICKNAME like concat('%', #{userName,jdbcType=VARCHAR} ,'%')
+      </if>
+      <if test="startDate!=null">  
+   		AND a.DATELINE <![CDATA[>=]]> #{startDate}  
+	  </if>
+	  <if test="endDate!=null">  
+    	AND a.DATELINE <![CDATA[<=]]> #{endDate}  
+	  </if>
+   </sql>
+   
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from group_post_comment
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from group_post_comment
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.GroupPostComment" >
+    insert into group_post_comment (COMMENT_ID, USER_ID, REPLY_COMMENT_ID, 
+      COMMENT_UID, CONTENT_ID, COMMENT_BODY, 
+      DATELINE, IS_READ, SHOW_STATUS
+      )
+    values (#{commentId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{replyCommentId,jdbcType=INTEGER}, 
+      #{commentUid,jdbcType=INTEGER}, #{contentId,jdbcType=INTEGER}, #{commentBody,jdbcType=VARCHAR}, 
+      #{dateline,jdbcType=BIGINT}, #{isRead,jdbcType=TINYINT}, #{showStatus,jdbcType=BIT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.GroupPostComment" >
+    insert into group_post_comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        COMMENT_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="replyCommentId != null" >
+        REPLY_COMMENT_ID,
+      </if>
+      <if test="commentUid != null" >
+        COMMENT_UID,
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID,
+      </if>
+      <if test="commentBody != null" >
+        COMMENT_BODY,
+      </if>
+      <if test="dateline != null" >
+        DATELINE,
+      </if>
+      <if test="isRead != null" >
+        IS_READ,
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="commentId != null" >
+        #{commentId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="replyCommentId != null" >
+        #{replyCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentUid != null" >
+        #{commentUid,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentBody != null" >
+        #{commentBody,jdbcType=VARCHAR},
+      </if>
+      <if test="dateline != null" >
+        #{dateline,jdbcType=BIGINT},
+      </if>
+      <if test="isRead != null" >
+        #{isRead,jdbcType=TINYINT},
+      </if>
+      <if test="showStatus != null" >
+        #{showStatus,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.GroupPostComment" >
+    update group_post_comment
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="replyCommentId != null" >
+        REPLY_COMMENT_ID = #{replyCommentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentUid != null" >
+        COMMENT_UID = #{commentUid,jdbcType=INTEGER},
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="commentBody != null" >
+        COMMENT_BODY = #{commentBody,jdbcType=VARCHAR},
+      </if>
+      <if test="dateline != null" >
+        DATELINE = #{dateline,jdbcType=BIGINT},
+      </if>
+      <if test="isRead != null" >
+        IS_READ = #{isRead,jdbcType=TINYINT},
+      </if>
+      <if test="showStatus != null" >
+        SHOW_STATUS = #{showStatus,jdbcType=BIT},
+      </if>
+    </set>
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.GroupPostComment" >
+    update group_post_comment
+    set USER_ID = #{userId,jdbcType=INTEGER},
+      REPLY_COMMENT_ID = #{replyCommentId,jdbcType=INTEGER},
+      COMMENT_UID = #{commentUid,jdbcType=INTEGER},
+      CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      COMMENT_BODY = #{commentBody,jdbcType=VARCHAR},
+      DATELINE = #{dateline,jdbcType=BIGINT},
+      IS_READ = #{isRead,jdbcType=TINYINT},
+      SHOW_STATUS = #{showStatus,jdbcType=BIT}
+    where COMMENT_ID = #{commentId,jdbcType=INTEGER}
+  </update>
+  
+   <select id="selectPageList" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="A_Column_List" /> ,b.NICKNAME as nickName ,b.USER_NAME as userName 
+    from group_post_comment a 
+    LEFT JOIN user b on a.USER_ID = b.USER_ID 
+    <where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <select id="selectTotalCount" resultType="int" parameterType="map" >
+    select 
+    count(1)
+    from group_post_comment a 
+    LEFT JOIN user b on a.USER_ID = b.USER_ID 
+    <where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+     <!-- 根据ID，批量隐藏/显示 -->
+  <update id="updateState" >
+  	update group_post_comment 
+  	set SHOW_STATUS = #{value}
+  	where COMMENT_ID in(
+  		<foreach collection="ids" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </update>
+  
+  <!-- 根据ID，批量删除 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from group_post_comment
+  	where COMMENT_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+   <!-- 根据文章ID获取评论列表 -->
+   <select id="listByPostId" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="A_Column_List" /> ,b.NICKNAME as nickName ,b.USER_NAME as userName ,c.TITLE as title
+    from group_post_comment a 
+    LEFT JOIN user b on a.USER_ID = b.USER_ID 
+	LEFT JOIN group_post c on c.POST_ID = a.CONTENT_ID 
+    where CONTENT_ID = #{contentId}
+  	<if test="start!=null and size!=null">  
+		LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <select id="countByPostId" resultType="int" parameterType="map" >
+    select 
+    count(1)
+    from group_post_comment a 
+    LEFT JOIN user b on a.USER_ID = b.USER_ID 
+	LEFT JOIN group_post c on c.POST_ID = a.CONTENT_ID 
+    where CONTENT_ID = #{contentId}
+  </select>
+</mapper>

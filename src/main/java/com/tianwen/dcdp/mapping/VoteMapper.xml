@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IVoteDao">
+	<!-- 列 -实体属性映射 -->
+	<resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Vote">
+		<id column="VOTE_ID" property="voteId" jdbcType="INTEGER" />
+		<result column="VOTE_UID" property="voteUid" jdbcType="INTEGER" />
+		<result column="VOTE_TITLE" property="voteTitle" jdbcType="VARCHAR" />
+		<result column="VOTE_TYPE" property="voteType" jdbcType="TINYINT" />
+		<result column="VOTE_TIME" property="voteTime" jdbcType="BIGINT" />
+		<result column="RESULT_VISIBLE" property="resultVisible"  jdbcType="TINYINT" />
+		<result column="LAST_TIME" property="lastTime" jdbcType="BIGINT" />
+		<result column="VOTETIMES" property="voteTimes" jdbcType="INTEGER" />
+		<result column="REPLYNUMS" property="replyNums" jdbcType="INTEGER" />
+		<result column="STATE" property="state" jdbcType="TINYINT" />
+		<result column="IS_INVITE" property="isInvite" jdbcType="TINYINT" />
+		<result column="INVITE_NUMS" property="inviteNums" jdbcType="INTEGER" />
+		<result column="SHOW_STATUS" property="showStatus" jdbcType="INTEGER" />
+		
+	</resultMap>
+	
+	<resultMap id="ResultMapWithBLOBs" type="com.tianwen.dcdp.pojo.Vote"
+		extends="BaseResultMap">
+		<result column="VOTE_INFO" property="voteInfo" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		VOTE_ID, VOTE_UID, VOTE_TITLE, VOTE_TYPE, VOTE_TIME, RESULT_VISIBLE,
+		LAST_TIME, VOTETIMES,
+		REPLYNUMS, STATE,IS_INVITE,INVITE_NUMS,SHOW_STATUS
+	</sql>
+
+	<sql id="Blob_Column_List">
+		VOTE_INFO
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from vote
+		where VOTE_ID = #{voteId,jdbcType=INTEGER}
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from vote
+		where VOTE_ID = #{voteId,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="insert" parameterType="com.tianwen.dcdp.pojo.Vote" useGeneratedKeys="true" keyProperty="voteId">
+		INSERT INTO vote (
+			VOTE_ID,
+			VOTE_UID,
+			VOTE_TITLE,
+			VOTE_TYPE,
+			VOTE_TIME,
+			RESULT_VISIBLE,
+			LAST_TIME,
+			VOTETIMES,
+			REPLYNUMS,
+			STATE,
+			IS_INVITE,
+			VOTE_INFO
+		) VALUES (
+			#{voteId,jdbcType=INTEGER},
+		    #{voteUid,jdbcType=INTEGER},
+			#{voteTitle,jdbcType=VARCHAR},
+			#{voteType,jdbcType=TINYINT}, 
+			#{voteTime,jdbcType=INTEGER}, 
+			#{resultVisible,jdbcType=TINYINT},
+			#{lastTime,jdbcType=INTEGER},
+			#{voteTimes,jdbcType=INTEGER},
+			#{replyNums,jdbcType=INTEGER},
+			#{state,jdbcType=TINYINT}, 
+			#{isInvite,jdbcType=TINYINT},
+			#{voteInfo,jdbcType=LONGVARCHAR}   
+		)
+	</insert>
+
+
+	<insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Vote" useGeneratedKeys="true" keyProperty="voteId">
+		insert into vote
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="voteId != null">
+				VOTE_ID,
+			</if>
+			<if test="voteUid != null">
+				VOTE_UID,
+			</if>
+			<if test="voteTitle != null">
+				VOTE_TITLE,
+			</if>
+			<if test="voteType != null">
+				VOTE_TYPE,
+			</if>
+			<if test="voteTime != null">
+				VOTE_TIME,
+			</if>
+			<if test="resultVisible != null">
+				RESULT_VISIBLE,
+			</if>
+			<if test="lastTime != null">
+				LAST_TIME,
+			</if>
+			<if test="voteTimes != null">
+				VOTETIMES,
+			</if>
+			<if test="replyNums != null">
+				REPLYNUMS,
+			</if>
+			<if test="state != null">
+				STATE,
+			</if>
+			<if test="isInvite != null">
+				IS_INVITE,
+			</if>
+			<if test="voteInfo != null">
+				VOTE_INFO,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="voteId != null">
+				#{voteId,jdbcType=INTEGER},
+			</if>
+			<if test="voteUid != null">
+				#{voteUid,jdbcType=INTEGER},
+			</if>
+			<if test="voteTitle != null">
+				#{voteTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="voteType != null">
+				#{voteType,jdbcType=TINYINT},
+			</if>
+			<if test="voteTime != null">
+				#{voteTime,jdbcType=INTEGER},
+			</if>
+			<if test="resultVisible != null">
+				#{resultVisible,jdbcType=TINYINT},
+			</if>
+			<if test="lastTime != null">
+				#{lastTime,jdbcType=INTEGER},
+			</if>
+			<if test="voteTimes != null">
+				#{voteTimes,jdbcType=INTEGER},
+			</if>
+			<if test="replyNums != null">
+				#{replyNums,jdbcType=INTEGER},
+			</if>
+			<if test="state != null">
+				#{state,jdbcType=TINYINT},
+			</if>
+			<if test="isInvite != null">
+				 #{isInvite,jdbcType=TINYINT},
+			</if>
+			<if test="voteInfo != null">
+				#{voteInfo,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+
+	<update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Vote">
+		update vote
+		<set>
+			<if test="voteUid != null">
+				VOTE_UID = #{voteUid,jdbcType=INTEGER},
+			</if>
+			<if test="voteTitle != null">
+				VOTE_TITLE = #{voteTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="voteType != null">
+				VOTE_TYPE = #{voteType,jdbcType=TINYINT},
+			</if>
+			<if test="voteTime != null">
+				VOTE_TIME = #{voteTime,jdbcType=INTEGER},
+			</if>
+			<if test="resultVisible != null">
+				RESULT_VISIBLE = #{resultVisible,jdbcType=TINYINT},
+			</if>
+			<if test="lastTime != null">
+				LAST_TIME = #{lastTime,jdbcType=INTEGER},
+			</if>
+			<if test="voteTimes != null">
+				VOTETIMES = #{voteTimes,jdbcType=INTEGER},
+			</if>
+			<if test="replyNums != null">
+				REPLYNUMS = #{replyNums,jdbcType=INTEGER},
+			</if>
+			<if test="state != null">
+				STATE = #{state,jdbcType=TINYINT},
+			</if>
+			<if test="isInvite != null">
+				IS_INVITE = #{isInvite,jdbcType=TINYINT},
+			</if>
+			
+			<if test="voteInfo != null">
+				VOTE_INFO = #{voteInfo,jdbcType=LONGVARCHAR},
+			</if>
+		</set>
+		where VOTE_ID = #{voteId,jdbcType=INTEGER}
+	</update>
+
+
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tianwen.dcdp.pojo.Vote">
+		update vote
+		set VOTE_UID = #{voteUid,jdbcType=INTEGER},
+		VOTE_TITLE = #{voteTitle,jdbcType=VARCHAR},
+		VOTE_TYPE = #{voteType,jdbcType=TINYINT},
+		VOTE_TIME = #{voteTime,jdbcType=INTEGER},
+		RESULT_VISIBLE = #{resultVisible,jdbcType=TINYINT},
+		LAST_TIME = #{lastTime,jdbcType=INTEGER},
+		VOTETIMES = #{voteTimes,jdbcType=INTEGER},
+		REPLYNUMS = #{replyNums,jdbcType=INTEGER},
+		STATE = #{state,jdbcType=TINYINT},
+		VOTE_INFO = #{voteInfo,jdbcType=LONGVARCHAR}
+		where VOTE_ID = #{voteId,jdbcType=INTEGER}
+	</update>
+
+
+	<update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Vote">
+		update vote
+		set VOTE_UID = #{voteUid,jdbcType=INTEGER},
+		VOTE_TITLE = #{voteTitle,jdbcType=VARCHAR},
+		VOTE_TYPE = #{voteType,jdbcType=TINYINT},
+		VOTE_TIME = #{voteTime,jdbcType=INTEGER},
+		RESULT_VISIBLE = #{resultVisible,jdbcType=TINYINT},
+		LAST_TIME = #{lastTime,jdbcType=INTEGER},
+		VOTETIMES = #{voteTimes,jdbcType=INTEGER},
+		REPLYNUMS = #{replyNums,jdbcType=INTEGER},
+		STATE = #{state,jdbcType=TINYINT}
+		where VOTE_ID = #{voteId,jdbcType=INTEGER}
+	</update>
+
+
+
+	<!-- 获取问卷调查列表 -->
+	<select id="getVoteList" parameterType="java.util.Map" resultType="java.util.Map">
+				SELECT
+				vt.VOTE_ID as voteId,
+				vt.VOTE_UID as voteUid,
+				vt.VOTE_TITLE as voteTitle,
+				vt.VOTE_TYPE as voteType,
+				vt.VOTE_TIME as voteTime,
+				vt.RESULT_VISIBLE as resultVisible,
+				vt.LAST_TIME as lastTime,
+				vt.VOTETIMES as voteTimes,
+				vt.REPLYNUMS as replyNums,
+				vt.STATE as state,
+				vt.VOTE_INFO as voteInfo,
+				vt.IS_INVITE  as isInvite ,
+				vt.INVITE_NUMS as inviteNums,
+				vt.SHOW_STATUS as showStatus,
+				CASE
+				WHEN VOTE_TYPE = 0 THEN
+				(
+				SELECT
+				a.USER_NAME
+				FROM
+				vote v
+				LEFT JOIN admin a ON v.VOTE_UID = a.user_id
+				WHERE
+				v.VOTE_ID = vt.VOTE_ID
+				)
+				ELSE
+				(
+				SELECT
+				u.USER_NAME
+				FROM
+				vote v
+				LEFT JOIN USER u ON v.VOTE_UID = u.USER_ID
+				WHERE
+				v.VOTE_ID = vt.VOTE_ID
+				)
+				END AS userName
+				FROM
+				vote vt
+				where 1=1 
+				<if test="voteTitle !=null and !&quot;&quot;.equals(voteTitle.trim()) ">
+					AND   vt.VOTE_TITLE like CONCAT('%',TRIM(#{voteTitle,jdbcType=VARCHAR}),'%')
+				</if>
+				<if test="voteType == 0  or voteType != null  ">
+					and vt.VOTE_TYPE = #{voteType}
+				</if>
+					ORDER BY  vt.VOTE_ID desc 
+				<if test="start!=null and size!=null">
+					LIMIT #{start},#{size}
+				</if>
+	</select>
+	
+	<!-- 统计问卷调查列表总数 -->
+	<select id="countVoteListNum" parameterType="java.util.Map" resultType="int">
+		    SELECT
+				COUNT(*)
+			FROM
+				vote vt
+			<where>
+				<if test="voteTitle !=null and !&quot;&quot;.equals(voteTitle.trim()) ">
+					  vt.VOTE_TITLE like CONCAT('%',TRIM(#{voteTitle,jdbcType=VARCHAR}),'%')
+				</if>
+				<if test="voteType == 0  or voteType != null  ">
+					and   vt.VOTE_TYPE = #{voteType}
+				</if>
+			</where>
+	</select>
+	
+	
+	
+	<!-- 根据问卷ID查询问卷题目 -->
+	<select id="getVoteQuestionsByMap" parameterType="java.util.Map"  resultType="java.util.Map">
+			
+			SELECT
+			vq.QUESTION_ID as questionId,
+			vq.VOTE_ID as voteId, 
+			vq.TITLE as title,
+			vq.TYPE as type,
+			vq.ORDER_NUM as orderNum
+			FROM
+			vote_question vq
+			WHERE
+			vq.VOTE_ID = #{voteId,jdbcType=INTEGER}
+	        ORDER BY  CASE WHEN vq.ORDER_NUM IS NOT NULL THEN vq.ORDER_NUM ELSE vq.QUESTION_ID END ASC  
+	       <if test="start!=null and size!=null">
+					LIMIT #{start},#{size}
+			</if>
+	 </select>
+	 
+	 
+	 <!-- 统计问卷调查 中问题数量 -->
+	 <select id="countQuestionNumById" parameterType="java.lang.Integer" resultType="int">
+		 	SELECT
+				count(*) 
+				FROM
+				vote_question vq
+				WHERE
+				vq.VOTE_ID = #{voteId,jdbcType=INTEGER}
+		       
+	 </select>
+	 
+	
+	
+	<!-- 删除动态 -->
+	<delete id="deleteVoteByIds" parameterType="java.util.List">
+		delete from vote    where   VOTE_ID IN
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 删除问卷详细信息  -->
+	<delete id="delteVoteOption" parameterType="java.util.List">
+		DELETE from vote_option  where  QUESTION_ID IN (
+		select QUESTION_ID  from vote_question	where VOTE_ID in 
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+		)<!-- 这个不是多余的 不要误删 -->
+	</delete>
+	
+	<!-- 删除问卷调查问题 -->
+	<delete id="delteVoteQuestion" parameterType="java.util.List">
+		DELETE   from vote_question	where VOTE_ID in 
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	
+	
+	<!-- 删除问卷调查用户回复 -->
+	<delete id="delteVoteUser" parameterType="java.util.List">
+		DELETE   from vote_user	where VOTE_ID in 
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+
+	<!--更新动态显示状态 -->
+	<update id="updateVoteStatus" parameterType="java.util.List">
+		UPDATE vote  v SET
+		v.SHOW_STATUS =  (case when v.SHOW_STATUS=0 then 1 else 0 end) <!-- 根据字段值 自动更改 -->
+		WHERE v.VOTE_ID IN
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	
+	
+	
+
+	<!-- 发布动态 -->
+	<update id="publishVotes" parameterType="java.util.List">
+		UPDATE vote  v SET
+		v.STATE =  1 <!-- 将状态改为已发布-->
+		WHERE   v.STATE =  0 and  v.VOTE_ID IN
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	
+	<!-- 结束问卷调查 -->
+	<update id="endVotes"   parameterType="java.util.List">
+			UPDATE vote  v SET
+			v.STATE =  2 <!-- 将状态改为结束-->
+			WHERE   v.STATE =  1 and  v.VOTE_ID IN
+			<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+				#{item}
+			</foreach>
+	</update>
+	
+	
+	
+	
+</mapper>

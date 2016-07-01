@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.ICommentDao" >
+	<resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Comment">
+		<id column="COMMENT_ID" property="commentId" jdbcType="INTEGER" />
+		<result column="REPLY_COMMENT_ID" property="replyCommentId"  jdbcType="INTEGER" />
+		<result column="USER_ID" property="userId" jdbcType="INTEGER" />
+		<result column="COMMENT_UID" property="commentUid" jdbcType="INTEGER" />
+		<result column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+		<result column="COMMENT_BODY" property="commentBody" jdbcType="VARCHAR" />
+		<result column="DATELINE" property="dateline" jdbcType="BIGINT" />
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+		<result column="REPLY_USER_NAME" property="replyUserName"  jdbcType="VARCHAR" />
+		<result column="IS_READ" property="isRead" jdbcType="VARCHAR" />
+		<result column="SHOW_STATUS" property="showStatus" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!--基础列 -->
+	<sql id="Base_Column_List">
+		COMMENT_ID, REPLY_COMMENT_ID, USER_ID, COMMENT_UID, CONTENT_ID, COMMENT_BODY,
+		DATELINE,IS_READ
+	</sql>
+
+
+	<!--条件 -->
+	<sql id="whereCondition">
+		<if test="contentId != null and !&quot;&quot;.equals(contentId)">
+			and a.CONTENT_ID = #{contentId}
+		</if>
+		<if test="commentBody != null and !&quot;&quot;.equals(commentBody.trim())">
+			and a.COMMENT_BODY like concat('%', #{commentBody},'%')
+		</if>
+		<if
+			test="replyUserName != null and !&quot;&quot;.equals(replyUserName.trim())">
+			and a.REPLY_USER_NAME like concat('%',#{replyUserName},'%')
+		</if>
+		<if test="startDate!=null and !&quot;&quot;.equals(startDate.trim())">
+			AND a.DATELINE <![CDATA[>=]]>
+			unix_timestamp(#{startDate})*1000
+		</if>
+		<if test="endDate!=null and !&quot;&quot;.equals(endDate.trim())">
+			AND a.DATELINE <![CDATA[<=]]>unix_timestamp(#{endDate})*1000
+		</if>
+	</sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" /> 
+    from comment where COMMENT_ID = #{commentId}
+    </select>
+
+	<!-- 获取评论列表 -->
+	<select id="getCommentList" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select a.*
+		from (
+		select co.*,
+		(select u.USER_NAME from user u LEFT JOIN comment c ON
+		u.USER_ID=c.USER_ID where c.COMMENT_ID=co.COMMENT_ID) as USER_NAME ,
+		(select u.USER_NAME from user u LEFT JOIN comment c on
+		u.USER_ID=c.COMMENT_UID where c.COMMENT_ID=co.COMMENT_ID) as
+		REPLY_USER_NAME
+		from comment co )a where 1=1 
+		<include refid="whereCondition" />
+		order by a.COMMENT_ID desc
+		<if test="start!=null and size!=null">
+			LIMIT #{start},#{size}
+		</if>
+
+	</select> 
+  
+  	<!-- 统计数量 -->
+  	<select id="getTotalCount" parameterType="java.util.Map" resultType="int">
+			  select count(*)
+				from (
+				select co.*,
+				(select u.USER_NAME from user u LEFT JOIN comment c ON
+				u.USER_ID=c.USER_ID where c.COMMENT_ID=co.COMMENT_ID) as USER_NAME ,
+				(select u.USER_NAME from user u LEFT JOIN comment c on
+				u.USER_ID=c.COMMENT_UID where c.COMMENT_ID=co.COMMENT_ID) as
+				REPLY_USER_NAME
+				from comment co )a where 1=1 
+				<include refid="whereCondition" />	
+  	</select>
+  	
+  	
+  	  <!-- 批量删除 -->
+	  <delete id="deleteCommentByIds"  parameterType = "java.util.List">
+			delete from comment where COMMENT_ID IN
+			<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+				#{item}
+			</foreach>
+	  </delete>
+  
+  	  <!-- 改变评论显示状态 -->
+  	  <update  id="hiddenCommentsByIds"  parameterType = "java.util.List" >
+		    UPDATE   comment SET  SHOW_STATUS =  (case when SHOW_STATUS=0 then 1 else 0 end) 
+		      WHERE COMMENT_ID IN 
+		  	<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+				#{item}
+			</foreach>
+  	</update>
+  	
+  </mapper>

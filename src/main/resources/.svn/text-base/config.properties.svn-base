@@ -1,0 +1,20 @@
+#app expiresIn 7 days
+constants.expiresIn = 604800000
+
+upload.host_name =  http://localhost:8080/edwManage/static/upload/
+
+#上传文件存储根目录
+upload.parent.location = D:/apache-tomcat-7.0.55/webapps/edwManage/static/upload/
+
+#缩略图存储子目录
+upload.child.thumbnail.location = thumbnail/
+
+#视频文件存储目录
+upload.child.media.location =media/
+
+
+upload.child.content.location = content/
+#索引文件存储根目录
+idx.parent.location = E:/idx/type
+#导出活动报名信息
+enroll.parent.location = E:/enroll

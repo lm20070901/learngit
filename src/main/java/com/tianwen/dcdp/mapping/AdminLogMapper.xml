@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IAdminLogDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.AdminLog" >
+    <id column="LOG_ID" property="logId" jdbcType="INTEGER" />
+    <result column="LOG_INFO" property="logInfo" jdbcType="VARCHAR" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="OPERATION_TYPE" property="operationType" jdbcType="TINYINT" />
+    <result column="LOG_TIME" property="logTime" jdbcType="BIGINT" />
+    <result column="USER_NAME" property="nickName" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    LOG_ID, LOG_INFO, USER_ID, OPERATION_TYPE, LOG_TIME
+  </sql>
+  <sql id="whereCondition">
+  	<if test="logInfo != null and !&quot;&quot;.equals(logInfo.trim())">
+  		and a.LOG_INFO like concat('%',#{logInfo},'%')
+  	</if>
+  	<if test="operType != null">
+  		and a.OPERATION_TYPE = #{operType}
+  	</if>
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from admin_log
+    where LOG_ID = #{logId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from admin_log
+    where LOG_ID = #{logId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.AdminLog" >
+    insert into admin_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        LOG_ID,
+      </if>
+      <if test="logInfo != null" >
+        LOG_INFO,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="operationType != null" >
+        OPERATION_TYPE,
+      </if>
+      <if test="logTime != null" >
+        LOG_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        #{logId,jdbcType=INTEGER},
+      </if>
+      <if test="logInfo != null" >
+        #{logInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="operationType != null" >
+        #{operationType,jdbcType=TINYINT},
+      </if>
+      <if test="logTime != null" >
+        #{logTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.AdminLog" >
+    update admin_log
+    <set >
+      <if test="logInfo != null" >
+        LOG_INFO = #{logInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="operationType != null" >
+        OPERATION_TYPE = #{operationType,jdbcType=TINYINT},
+      </if>
+      <if test="logTime != null" >
+        LOG_TIME = #{logTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where LOG_ID = #{logId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询记录总数 -->
+  <select id="selectTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from admin_log a
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <!-- 查询日志记录列表 -->
+  <select id="selectLogList" parameterType="map" resultMap="BaseResultMap">
+  	select a.*, b.USER_NAME
+  	FROM admin_log a left join admin b on a.USER_ID = b.USER_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	order by a.LOG_ID desc
+  	<if test="start != null and size != null">
+  		limit #{start},#{size}
+  	</if>
+  </select>
+</mapper>

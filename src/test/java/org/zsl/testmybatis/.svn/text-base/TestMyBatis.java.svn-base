@@ -1,0 +1,65 @@
+package org.zsl.testmybatis;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.github.miemiedev.mybatis.paginator.domain.Order;
+import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
+import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.github.miemiedev.mybatis.paginator.domain.Paginator;
+import com.tianwen.dcdp.dao.IPageViewDao;
+import com.tianwen.dcdp.pojo.PageView;
+import com.tianwen.dcdp.service.IPageViewService;
+
+@RunWith(SpringJUnit4ClassRunner.class)		//表示继承了SpringJUnit4ClassRunner类,"classpath:spring-mvc.xml"classpath:spring-mybatis.xml,
+@ContextConfiguration(locations = {"classpath:applicationContext.xml"})
+
+public class TestMyBatis {
+	private static Logger logger = Logger.getLogger(TestMyBatis.class);
+//	private ApplicationContext ac = null;
+	
+
+	
+	@Resource
+	private IPageViewService pageSerive;
+	
+	@Resource
+	private IPageViewDao pageDao;
+	
+//	@Before
+//	public void before() {
+//		ac = new ClassPathXmlApplicationContext("applicationContext.xml");
+//		userService = (IUserService) ac.getBean("userService");
+//	}
+
+	@Test
+	public void test1() {
+		
+		Map<String,Object> whereMap = new HashMap<String,Object>();
+		whereMap.put("beginTime", "2015-01-01");
+		whereMap.put("endTime", "2016-01-01 00:00:01");
+		List<PageView> list = pageSerive.getPageViewList(whereMap);
+		System.out.println("num="+pageSerive.countPageViewNum(whereMap));;
+		System.out.println(list.size());
+		System.out.println(list.get(0).getReportId());
+		PageBounds pageBounds = new PageBounds(1, 10 ,Order.formString(" REPORT_ID"));  
+		PageList<PageView>  list1 = pageDao.getPageViewByPage(whereMap,pageBounds);
+		System.out.println("list1="+list1);
+		Paginator paginator = list1.getPaginator();
+		System.out.println("paginator="+paginator);
+		System.out.println("total="+ paginator.getTotalCount());
+		//actionService.deleteActionByIds(idList);
+		// System.out.println(user.getUserName());
+		// logger.info("值："+user.getUserName());
+		//logger.info(JSON.toJSONString(user));
+	}
+}

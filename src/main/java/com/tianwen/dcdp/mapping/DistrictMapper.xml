@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IDistrictDao" >
+
+	<resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.District">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="LEVEL" property="level" jdbcType="INTEGER" />
+		<result column="UPID" property="upid" jdbcType="INTEGER" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		ID,NAME,LEVEL,UPID 
+	</sql>
+	
+	<!--获取省  -->
+	<!-- <select id="getProvienceListById" resultType="java.util.Map" parameterType="java.lang.Integer" >
+		select  
+		 ID AS  'value',NAME AS 'key' 
+		from DISTRICT where level=1 
+		<if test="provienceId != null and provienceId!=''" >
+       		AND ID=#{provienceId}
+      	</if>
+	</select> -->
+	
+	<select id="getProvienceListById" resultMap="BaseResultMap" parameterType="java.util.Map" >
+		select  
+		 <include refid="Base_Column_List" />
+		from DISTRICT where level=1 
+		<if test="provienceId != null and provienceId!=''" >
+       		AND ID=#{provienceId}
+      	</if>
+	</select>
+	
+	<!--  获取市-->
+	<!-- <select id="getCityListByMap" resultType="java.util.Map" parameterType="java.util.Map" >
+		select ID AS  'value',NAME AS 'key' 
+		from DISTRICT where level=2 
+		<if test="cityId != null and cityId!=''" >
+       		AND ID=#{cityId}
+      	</if>
+      	<if test="provienceId != null and provienceId!=''" >
+       		AND UPID=#{provienceId}
+      	</if>
+	</select> -->
+	<select id="getCityListByMap" resultMap="BaseResultMap"   parameterType="java.util.Map" >
+		select  <include refid="Base_Column_List" />
+		from DISTRICT where level=2 
+		<if test="cityId != null and cityId!=''" >
+       		AND ID=#{cityId}
+      	</if>
+      	<if test="provienceId != null and provienceId!=''" >
+       		AND UPID=#{provienceId}
+      	</if>
+	</select> 
+	
+</mapper>

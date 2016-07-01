@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IRoleDao">
+
+	<resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Role">
+		<id column="ROLE_ID" property="roleId" jdbcType="INTEGER" />
+		<result column="ROLE_NAME" property="roleName" jdbcType="VARCHAR" />
+		<result column="MARK" property="mark" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="whereCondition">
+		<if test="roleId!=null and roleId!=''">
+			AND ROLE_ID = #{roleId}
+		</if>
+		<if test="roleName!=null and roleName!=''">
+			AND ROLE_NAME like CONCAT('%',TRIM(#{roleName}),'%')
+		</if>
+		<if test="mark!=null and mark!=''">
+			AND MARK like CONCAT('%',TRIM(#{mark}),'%')
+		</if>
+	</sql>
+
+	<sql id="Base_Column_List">
+		ROLE_ID, ROLE_NAME, MARK
+	</sql>
+
+	<!-- 分页查询 -->
+	<select id="getByPage" resultMap="BaseResultMap" parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM ROLE
+		WHERE 1 = 1
+		<include refid="whereCondition" />
+		<if test="start!=null and size!=null">
+			LIMIT #{start},#{size}
+		</if>
+	</select>
+
+	<!-- 查询总数 -->
+	<select id="getTotalCount" resultType="int" parameterType="map">
+		SELECT COUNT(1)
+		FROM ROLE
+		WHERE 1 = 1
+		<include refid="whereCondition" />
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="com.tianwen.dcdp.pojo.Role" useGeneratedKeys="true" keyProperty="roleId">
+		INSERT INTO ROLE(ROLE_ID, ROLE_NAME, MARK)
+		VALUES(#{roleId},#{roleName},#{mark})
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="delete" parameterType="java.lang.Integer">
+		DELETE FROM ROLE
+		WHERE ROLE_ID = #{roleId}
+	</delete>
+
+	<!-- 批量删除 -->
+	<delete id="deleteRoleByIds" parameterType="java.util.List">
+		DELETE   from ROLE	where ROLE_ID in 
+		<foreach collection="list" index="index" item="item" open="("  separator="," close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 更新 -->
+	<update id="update" parameterType="map">
+		UPDATE ROLE
+		<set>
+			<if test="roleName != null and roleName!=''">
+				ROLE_NAME = #{roleName},
+			</if>
+			<if test="mark != null and mark!=''">
+				MARK = #{mark},
+			</if>
+		</set>
+		WHERE ROLE_ID = #{roleId}
+	</update>
+
+</mapper>

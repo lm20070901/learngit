@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IReportDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Report" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="REPORT_TYPE" property="reportType" jdbcType="TINYINT" />
+    <result column="CONTENT_CATEGORY" property="contentCategory" jdbcType="TINYINT" />
+    <result column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+    <result column="REPORT_BODY" property="reportBody" jdbcType="VARCHAR" />
+    <result column="DATELINE" property="dateline" jdbcType="BIGINT" />
+    <result column="IS_HANDEL" property="isHandel" jdbcType="TINYINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ID, USER_NAME, REPORT_TYPE, CONTENT_CATEGORY, CONTENT_ID, REPORT_BODY, DATELINE, 
+    IS_HANDEL
+  </sql>
+  <sql id="whereCondition">
+  	<if test="reportBody != null and !&quot;&quot;.equals(reportBody.trim())" >
+        AND REPORT_BODY like concat('%', #{reportBody,jdbcType=VARCHAR} ,'%')
+      </if>
+      <if test="reportType != null" >
+        AND REPORT_TYPE = #{reportType,jdbcType=TINYINT}
+      </if>
+       <if test="isHandel != null" >
+        AND IS_HANDEL = #{isHandel,jdbcType=TINYINT}
+      </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from report
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from report
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.Report" >
+    insert into report (ID, USER_NAME, REPORT_TYPE, 
+      CONTENT_CATEGORY, CONTENT_ID, REPORT_BODY, 
+      DATELINE, IS_HANDEL)
+    values (#{id,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{reportType,jdbcType=TINYINT}, 
+      #{contentCategory,jdbcType=TINYINT}, #{contentId,jdbcType=INTEGER}, #{reportBody,jdbcType=VARCHAR}, 
+      #{dateline,jdbcType=BIGINT}, #{isHandel,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Report" >
+    insert into report
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="userName != null" >
+        USER_NAME,
+      </if>
+      <if test="reportType != null" >
+        REPORT_TYPE,
+      </if>
+      <if test="contentCategory != null" >
+        CONTENT_CATEGORY,
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID,
+      </if>
+      <if test="reportBody != null" >
+        REPORT_BODY,
+      </if>
+      <if test="dateline != null" >
+        DATELINE,
+      </if>
+      <if test="isHandel != null" >
+        IS_HANDEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="reportType != null" >
+        #{reportType,jdbcType=TINYINT},
+      </if>
+      <if test="contentCategory != null" >
+        #{contentCategory,jdbcType=TINYINT},
+      </if>
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="reportBody != null" >
+        #{reportBody,jdbcType=VARCHAR},
+      </if>
+      <if test="dateline != null" >
+        #{dateline,jdbcType=BIGINT},
+      </if>
+      <if test="isHandel != null" >
+        #{isHandel,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Report" >
+    update report
+    <set >
+      <if test="userName != null" >
+        USER_NAME = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="reportType != null" >
+        REPORT_TYPE = #{reportType,jdbcType=TINYINT},
+      </if>
+      <if test="contentCategory != null" >
+        CONTENT_CATEGORY = #{contentCategory,jdbcType=TINYINT},
+      </if>
+      <if test="contentId != null" >
+        CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="reportBody != null" >
+        REPORT_BODY = #{reportBody,jdbcType=VARCHAR},
+      </if>
+      <if test="dateline != null" >
+        DATELINE = #{dateline,jdbcType=BIGINT},
+      </if>
+      <if test="isHandel != null" >
+        IS_HANDEL = #{isHandel,jdbcType=TINYINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Report" >
+    update report
+    set USER_NAME = #{userName,jdbcType=VARCHAR},
+      REPORT_TYPE = #{reportType,jdbcType=TINYINT},
+      CONTENT_CATEGORY = #{contentCategory,jdbcType=TINYINT},
+      CONTENT_ID = #{contentId,jdbcType=INTEGER},
+      REPORT_BODY = #{reportBody,jdbcType=VARCHAR},
+      DATELINE = #{dateline,jdbcType=BIGINT},
+      IS_HANDEL = #{isHandel,jdbcType=TINYINT}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+ 
+  <!-- 查询符合条件的总记录数 -->
+   <select id="selectTotalCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+  	select count(1)
+  	from report 
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <!--按条件分页获取列表 -->
+  <select id="selectPageList" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select  <include refid="Base_Column_List" /> 
+  	from report 
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+   <!-- 根据ID，批量删除 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from report
+  	where ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+  <update id="updateState">
+    update report set
+    IS_HANDEL = #{isHandel}
+    where ID = #{id}
+  </update>
+</mapper>

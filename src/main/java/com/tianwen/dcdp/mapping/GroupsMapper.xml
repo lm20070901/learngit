@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IGroupsDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Groups" >
+    <id column="GROUP_ID" property="groupId" jdbcType="INTEGER" />
+    <result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" />
+    <result column="GROUP_INTRODUCE" property="groupIntroduce" jdbcType="VARCHAR" />
+    <result column="MODULE" property="module" jdbcType="INTEGER" />
+    <result column="CREATE_USER_ID" property="createUserId" jdbcType="INTEGER" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="INTEGER" />
+    <result column="ICON_PATH" property="iconPath" jdbcType="VARCHAR" />
+     <result column="FORBID" property="forbid" jdbcType="TINYINT" />
+    <result column="STATE" property="state" jdbcType="TINYINT" />
+    <result column="USER_COUNT" property="userCount" jdbcType="INTEGER" />
+    <result column="ARTICLE_COUNT" property="articleCount" jdbcType="INTEGER" />
+    <result column="SUGGESTION" property="suggestion" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="ORDER_NUM" property="orderNum" jdbcType="INTEGER" />
+    <result column="AUDITOR_ID" property="auditorId" jdbcType="INTEGER" />
+  </resultMap>
+  
+   <resultMap id="ForbidMap" type="java.lang.Integer" >
+  		<result column="FORBID" property="forbid" jdbcType="TINYINT" />
+   </resultMap>
+  <sql id="Base_Column_List" >
+    GROUP_ID, GROUP_NAME, GROUP_INTRODUCE, CREATE_USER_ID, CREATE_TIME, ICON_PATH, FORBID, STATE, 
+    USER_COUNT, ARTICLE_COUNT,SUGGESTION,MODULE,AUDITOR_ID
+  </sql>
+  <sql id="B_Column_List" >
+    b.GROUP_ID, b.GROUP_NAME, b.GROUP_INTRODUCE, b.CREATE_USER_ID, b.CREATE_TIME, b.ICON_PATH, b.FORBID, b.STATE, 
+    b.USER_COUNT, b.ARTICLE_COUNT,b.SUGGESTION,b.MODULE,b.AUDITOR_ID
+  </sql>
+   <sql id="whereCondition">
+   	  <if test="groupName != null and !&quot;&quot;.equals(groupName.trim())" >
+        AND GROUP_NAME like concat('%', #{groupName,jdbcType=VARCHAR} ,'%')
+      </if>
+      <if test="state != null" >
+        AND STATE = #{state,jdbcType=TINYINT}
+      </if>
+      <if test="module != null" >
+        AND MODULE = #{module,jdbcType=TINYINT}
+      </if>
+   </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" /> ,b.USER_NAME as userName
+    from groups a LEFT JOIN user b on a.CREATE_USER_ID = b.USER_ID
+    where GROUP_ID = #{groupId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectByName" parameterType="com.tianwen.dcdp.pojo.Groups" resultType="int">
+    select count(1)
+    from groups a 
+    where GROUP_ID != #{groupId} and GROUP_NAME = #{groupName}
+  </select>
+  
+
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from groups
+    where GROUP_ID = #{groupId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.Groups"  useGeneratedKeys="true" keyProperty="id">
+    insert into groups (GROUP_ID, GROUP_NAME, GROUP_INTRODUCE, 
+      CREATE_USER_ID, CREATE_TIME, ICON_PATH, FORBID,
+      STATE, USER_COUNT, ARTICLE_COUNT,SUGGESTION
+      )
+    values (#{groupId,jdbcType=INTEGER}, #{groupName,jdbcType=VARCHAR}, #{groupIntroduce,jdbcType=VARCHAR}, 
+      #{createUserId,jdbcType=INTEGER}, #{createTime,jdbcType=INTEGER}, #{iconPath,jdbcType=VARCHAR}, 
+      #{forbid,jdbcType=TINYINT},#{state,jdbcType=TINYINT}, #{userCount,jdbcType=INTEGER}, #{articleCount,jdbcType=INTEGER},
+      #{suggestion,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Groups"  useGeneratedKeys="true" keyProperty="id">
+    insert into groups
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        GROUP_ID,
+      </if>
+      <if test="groupName != null" >
+        GROUP_NAME,
+      </if>
+      <if test="module != null" >
+        MODULE,
+      </if>
+      <if test="groupIntroduce != null" >
+        GROUP_INTRODUCE,
+      </if>
+      <if test="createUserId != null" >
+        CREATE_USER_ID,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="iconPath != null" >
+        ICON_PATH,
+      </if>
+       <if test="forbid != null" >
+        FORBID,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="userCount != null" >
+        USER_COUNT,
+      </if>
+      <if test="articleCount != null" >
+        ARTICLE_COUNT,
+      </if>
+      <if test="suggestion != null" >
+        SUGGESTION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="groupId != null" >
+        #{groupId,jdbcType=INTEGER},
+      </if>
+      <if test="groupName != null" >
+        #{groupName,jdbcType=VARCHAR},
+      </if>
+       <if test="module != null" >
+        #{module,jdbcType=INTEGER},
+      </if>
+      <if test="groupIntroduce != null" >
+        #{groupIntroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=INTEGER},
+      </if>
+      <if test="iconPath != null" >
+        #{iconPath,jdbcType=VARCHAR},
+      </if>
+      <if test="forbid != null" >
+        #{forbid,jdbcType=TINYINT},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="userCount != null" >
+        #{userCount,jdbcType=INTEGER},
+      </if>
+      <if test="articleCount != null" >
+        #{articleCount,jdbcType=INTEGER},
+      </if>
+      <if test="suggestion != null" >
+        #{suggestion,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Groups" >
+    update groups
+    <set >
+      <if test="groupName != null" >
+        GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      </if>
+       <if test="module != null" >
+        MODULE = #{module,jdbcType=INTEGER},
+      </if>
+      <if test="groupIntroduce != null" >
+        GROUP_INTRODUCE = #{groupIntroduce,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserId != null" >
+        CREATE_USER_ID = #{createUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=INTEGER},
+      </if>
+      <if test="iconPath != null" >
+        ICON_PATH = #{iconPath,jdbcType=VARCHAR},
+      </if>
+       <if test="forbid != null" >
+        FORBID = #{forbid,jdbcType=TINYINT},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="userCount != null" >
+        USER_COUNT = #{userCount,jdbcType=INTEGER},
+      </if>
+      <if test="articleCount != null" >
+        ARTICLE_COUNT = #{articleCount,jdbcType=INTEGER},
+      </if>
+      <if test="suggestion != null" >
+        SUGGESTION = #{suggestion,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorId != null" >
+        AUDITOR_ID = #{auditorId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where GROUP_ID = #{groupId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Groups" >
+    update groups
+    set GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+      GROUP_INTRODUCE = #{groupIntroduce,jdbcType=VARCHAR},
+      CREATE_USER_ID = #{createUserId,jdbcType=INTEGER},
+      CREATE_TIME = #{createTime,jdbcType=INTEGER},
+      ICON_PATH = #{iconPath,jdbcType=VARCHAR},
+      FORBID = #{forbid,jdbcType=TINYINT},
+      STATE = #{state,jdbcType=TINYINT},
+      USER_COUNT = #{userCount,jdbcType=INTEGER},
+      ARTICLE_COUNT = #{articleCount,jdbcType=INTEGER},
+       SUGGESTION = #{suggestion,jdbcType=VARCHAR}
+    where GROUP_ID = #{groupId,jdbcType=INTEGER}
+  </update>
+    <!-- 根据ID，批量更新状态 -->
+  <update id="updateState">
+  	update groups 
+  	set STATE = #{value}
+  	where GROUP_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </update>
+  
+    <!-- 根据ID，批量禁用，解禁 -->
+  <update id="updateForbid" >
+  	update groups 
+  	set FORBID = #{value}
+  	where GROUP_ID in(
+  		<foreach collection="ids" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </update>
+  
+  <!-- 根据ID，批量删除 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from groups
+  	where GROUP_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+  
+    <select id="selectForbid" resultMap="ForbidMap" parameterType="list" >
+    select FORBID
+    from groups
+    where GROUP_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach> 
+  		)
+  </select>
+  
+  <!-- 查询符合条件的总记录数 -->
+   <select id="selectTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from groups a 
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <!-- 按条件分页获取列表 -->
+  <select id="selectPageList" resultMap="BaseResultMap" parameterType="map">
+  	select a.*, b.NICKNAME as userName
+  	from groups a left join user b on b.USER_ID = a.CREATE_USER_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+   <!-- 小组成员 -->
+   <select id="selectUsers" resultType="java.util.Map" parameterType="map" >
+     select a.USER_ID as userId,c.NICKNAME as nickName,a.JOIN_TIME as joinTime ,
+	IF(d.postNum IS NULL,0,d.postNum) 
+	AS postNum 
+	from group_user a 
+	LEFT JOIN groups b on a.GROUP_ID = b.GROUP_ID 
+	LEFT JOIN user c on c.user_id = a.user_id  
+	left JOIN (select count(USER_ID) as postNum,GROUP_ID,USER_ID from group_post 
+	where GROUP_ID = #{groupId} group by USER_ID) d
+	on a.group_id = d.group_id and a.user_id = d.user_id where a.GROUP_ID =  #{groupId}  
+	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+   </select>
+   <!-- 查询符合条件的总记录数 -->
+   <select id="selectUsersCount" parameterType="map" resultType="int">
+  	select count(1)
+	from group_user a 
+	LEFT JOIN groups b on a.GROUP_ID = b.GROUP_ID 
+	LEFT JOIN user c on c.user_id = a.user_id  
+	left JOIN (select count(USER_ID) as postNum,GROUP_ID,USER_ID from group_post 
+	where GROUP_ID = #{groupId} group by USER_ID) d
+	on a.group_id = d.group_id and a.user_id = d.user_id where a.GROUP_ID =  #{groupId}  
+  </select>
+  <!--热门小组 查询符合条件的总记录数 -->
+   <select id="selectHotCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+  	select count(1)
+  	from hot_group a LEFT JOIN  groups b on b.GROUP_ID = a.GROUP_ID 
+	LEFT JOIN user c on c.USER_ID = b.CREATE_USER_ID  
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <!--热门小组 按条件分页获取列表 -->
+  <select id="selectHotList" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select a.ORDER_NUM as orderNum, c.NICKNAME as userName,
+  	 <include refid="B_Column_List" /> 
+  	from hot_group a LEFT JOIN  groups b on b.GROUP_ID = a.GROUP_ID 
+	LEFT JOIN user c on c.USER_ID = b.CREATE_USER_ID  
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+   <!-- 根据ID，批量删除 -->
+  <delete id="batchDelHot" parameterType="list">
+  	delete from hot_group
+  	where GROUP_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+  
+  <select id="selectHotById" parameterType="java.lang.Integer" resultType="java.util.Map">
+     select a.GROUP_ID as groupId,a.ORDER_NUM as orderNum ,b.GROUP_NAME as groupName
+     from hot_group a 
+     LEFT JOIN groups b on a.GROUP_ID = b.GROUP_ID 
+     where a.GROUP_ID = #{groupId}
+  </select>
+  <!-- 热门小组编辑排序 -->
+  <update id="updateOrderNum">
+  	update hot_group 
+  	set ORDER_NUM = #{orderNum}
+  	where GROUP_ID =#{groupId}
+  </update>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select GROUP_ID as groupId , GROUP_NAME as groupName , GROUP_INTRODUCE as groupIntroduce
+     from  groups where 1=1 
+   </select>
+   
+    <select id="selectByIds" parameterType="list" resultMap="BaseResultMap">
+	   select a.*, b.NICKNAME as userName
+  	from groups a left join user b on b.USER_ID = a.CREATE_USER_ID
+	  	where a.GROUP_ID in
+		(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  		)
+	  	order by a.GROUP_ID desc
+   </select>
+  
+</mapper>

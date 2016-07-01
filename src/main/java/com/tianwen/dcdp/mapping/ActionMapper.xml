@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tianwen.dcdp.dao.IActionDao">
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Action">
+    <id column="ACTION_ID" jdbcType="INTEGER" property="actionId" />
+    <result column="ACTION_NAME" jdbcType="VARCHAR" property="actionName" />
+    <result column="ACTION_URL" jdbcType="VARCHAR" property="actionUrl" />
+    <result column="PID" jdbcType="INTEGER" property="pid" />
+    <result column="MARK" jdbcType="VARCHAR" property="mark" />
+    <result column="ORDER_NUM" jdbcType="INTEGER" property="orderNum" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    ACTION_ID, ACTION_NAME, ACTION_URL, PID, MARK, ORDER_NUM
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from action
+    where ACTION_ID = #{actionId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from action
+    where ACTION_ID = #{actionId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.tianwen.dcdp.pojo.Action">
+    insert into action (ACTION_ID, ACTION_NAME, ACTION_URL, 
+      PID, MARK, ORDER_NUM
+      )
+    values (#{actionId,jdbcType=INTEGER}, #{actionName,jdbcType=VARCHAR}, #{actionUrl,jdbcType=VARCHAR}, 
+      #{pid,jdbcType=INTEGER}, #{mark,jdbcType=VARCHAR}, #{orderNum,jdbcType=INTEGER}
+      )
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Action">
+    insert into action
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="actionId != null">
+        ACTION_ID,
+      </if>
+      <if test="actionName != null">
+        ACTION_NAME,
+      </if>
+      <if test="actionUrl != null">
+        ACTION_URL,
+      </if>
+      <if test="pid != null">
+        PID,
+      </if>
+      <if test="mark != null">
+        MARK,
+      </if>
+      <if test="orderNum != null">
+        ORDER_NUM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="actionId != null">
+        #{actionId,jdbcType=INTEGER},
+      </if>
+      <if test="actionName != null">
+        #{actionName,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null">
+        #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null or pid==0">
+        #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null">
+        #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null or orderNum==0">
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Action">
+    update action
+    <set>
+      <if test="actionName != null">
+        ACTION_NAME = #{actionName,jdbcType=VARCHAR},
+      </if>
+      <if test="actionUrl != null">
+        ACTION_URL = #{actionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="pid != null or pid==0">
+        PID = #{pid,jdbcType=INTEGER},
+      </if>
+      <if test="mark != null">
+        MARK = #{mark,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNum != null or orderNum==0">
+        ORDER_NUM = #{orderNum,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ACTION_ID = #{actionId,jdbcType=INTEGER}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.tianwen.dcdp.pojo.Action">
+    update action
+    set ACTION_NAME = #{actionName,jdbcType=VARCHAR},
+      ACTION_URL = #{actionUrl,jdbcType=VARCHAR},
+      PID = #{pid,jdbcType=INTEGER},
+      MARK = #{mark,jdbcType=VARCHAR},
+      ORDER_NUM = #{orderNum,jdbcType=INTEGER}
+    where ACTION_ID = #{actionId,jdbcType=INTEGER}
+  </update>
+	
+
+
+	<!-- 批量插入角色action关系 -->
+	<insert id="saveRoleAndAction" parameterType="java.util.Map">
+
+		insert into role_action (ROLE_ID,ACTION_ID ) values
+
+		<foreach collection="idList" item="id" separator=",">
+			(#{roleId,jdbcType=INTEGER},#{id,jdbcType=INTEGER})
+		</foreach>
+
+	</insert>
+	<!-- <update id="saveRoleAndAction"  parameterType="java.util.Map">
+			UPDATE role_action v set
+			v.IS_USED = (case when v.IS_USED=0 then 1 else 0 end) 根据字段值 自动更改
+			WHERE v.ROLE_ID=#{roleId,jdbcType=INTEGER} and v.ACTION_ID IN
+			<foreach collection="idList" index="index" item="id" open="(" separator="," close=")">
+				#{id,jdbcType=INTEGER}
+			</foreach>
+	</update> -->
+
+	<!--  查询下级权限 -->
+	<select id="queryActionByLevle" parameterType="java.util.Map" resultType="java.util.Map">
+			select
+			a.ACTION_ID as actionId,
+			a.ACTION_NAME as actionName,
+			a.ACTION_URL
+			as actionUrl,
+			a.PID as pid,
+			a.MARK as mark,
+			<!-- IFNULL(ra.IS_USED,0) AS isUsed -->
+			CASE  WHEN ra.ACTION_ID IS NULL THEN 0 ELSE 1  END AS isUsed ,
+			CASE  WHEN  NOT EXISTS (SELECT  1  FROM action ac WHERE  a.ACTION_ID = ac.PID) THEN 0 ELSE 1 END AS  haveChild
+			from action a
+			LEFT JOIN role_action ra ON (a.ACTION_ID = ra.ACTION_ID
+			<if test="roleId!=null and roleId!=''">
+				AND ra.ROLE_ID=#{roleId,jdbcType=INTEGER}
+			</if>
+			)
+			where 1=1
+		<if test="actionId!=null and actionId!=''">
+			and a.ACTION_ID = #{actionId,jdbcType=INTEGER})
+		</if>
+		<if test="actionName != null and actionName !=''">
+			and a.ACTION_NAME like CONCAT('%',TRIM(#{actionName}),'%')
+		</if>
+		<if test="pid != null or pid == 0">
+			and a.PID = #{pid,jdbcType=INTEGER}
+		</if>
+		<if test="actionUrl != null and actionUrl !='' ">
+			and a.ACTION_URL like CONCAT('%',TRIM(#{actionUrl}),'%')
+		</if>
+		<if test="mark != null and mark !='' ">
+			and a.MARK like CONCAT('%',TRIM(#{mark}),'%')
+		</if>
+		order by a.ORDER_NUM  ASC <!-- 靠这个排序 -->
+	</select>
+
+	<!-- action 列表 -->
+	<select id="getActionListByMap" parameterType="java.util.Map" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from action
+		where 1=1
+		<!-- <if test="roleId!=null and roleId!='' and (isUsed!=null or isUsed == 0)">
+			and ACTION_ID in (select ACTION_ID from role_action where
+			ROLE_ID=#{roleId,jdbcType=INTEGER}  and IS_USED = #{isUsed})
+		</if> -->
+		<if test="roleId!=null and roleId!='' ">
+			and ACTION_ID in (select ACTION_ID from role_action where
+			ROLE_ID=#{roleId,jdbcType=INTEGER}  )
+		</if>
+		<if test="actionId!=null and actionId!=''">
+			and ACTION_ID = #{actionId,jdbcType=INTEGER})
+		</if>
+		<if test="actionName != null and actionName !=''">
+			and ACTION_NAME like CONCAT('%',TRIM(#{actionName}),'%')
+		</if>
+		<if test="pid != null or pid == 0">
+			and PID = #{pid,jdbcType=INTEGER}
+		</if>
+		<if test="actionUrl != null and actionUrl !='' ">
+			and ACTION_URL like CONCAT('%',TRIM(#{actionUrl}),'%')
+		</if>
+		<if test="mark != null and mark !='' ">
+			and MARK like CONCAT('%',TRIM(#{mark}),'%')
+		</if>
+		order by ACTION_ID DESC
+		<if test="start!=null and size!=null">
+			LIMIT #{start},#{size}
+		</if>
+	</select>
+
+
+	
+	<!-- 统计数量 -->
+	<select id="countActionListNum" parameterType="java.util.Map" resultType="int">
+		select
+		count(*)
+		from action
+		where 1=1
+		<!-- <if test="roleId!=null and roleId!='' and  (isUsed!=null or isUsed == 0) ">
+			and ACTION_ID in (select ACTION_ID from role_action where
+			ROLE_ID=#{roleId,jdbcType=INTEGER}   IS_USED = #{isUsed})
+		</if> -->
+		 <if test="roleId!=null and roleId!=''  ">
+			and ACTION_ID in (select ACTION_ID from role_action where
+			ROLE_ID=#{roleId,jdbcType=INTEGER} )
+		</if> 
+		<if test="actionId!=null and actionId!=''">
+			and ACTION_ID = #{actionId,jdbcType=INTEGER})
+		</if>
+		<if test="actionName != null and actionName !=''">
+			and ACTION_NAME like CONCAT('%',TRIM(#{actionName}),'%')
+		</if>
+		<if test="pid != null or pid == 0">
+			and PID = #{pid,jdbcType=INTEGER}
+		</if>
+		<if test="actionUrl != null and actionUrl !='' ">
+			and ACTION_URL like CONCAT('%',TRIM(#{actionUrl}),'%')
+		</if>
+		<if test="mark != null and mark !='' ">
+			and MARK like CONCAT('%',TRIM(#{mark}),'%')
+		</if>
+
+	</select>
+	
+	<!-- 查询下一个排序值 -->
+	<select  id="selectNextOrderNum"  parameterType="java.lang.Integer" resultType="int">
+		SELECT IFNULL(MAX(ORDER_NUM),0)+1 from action WHERE PID = #{pid,jdbcType=INTEGER}
+	</select>
+	
+	<!-- 删除访问路径 -->
+	<delete id="delteActionByIds" parameterType="java.util.List">
+			DELETE from action where ( ACTION_ID in
+			<foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+				#{item}
+			</foreach>
+			) OR (
+			PID IN
+			<foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+				#{item}
+			</foreach>
+			)
+	</delete>
+	
+	
+	<!-- 根据actionId 删除action_role -->
+	<delete id="delteActionAndRoleByActionIds" parameterType="java.util.Map">
+			DELETE  from  role_action
+			<where>
+				<if test="roleId!=null and roleId!=''">
+					ROLE_ID=#{roleId,jdbcType=INTEGER}
+				</if>
+				<if test="idList!=null and idList.size()&gt;0">
+					AND ACTION_ID IN
+					<foreach close=")" collection="idList" index="index" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</if>
+			</where>
+	</delete>
+</mapper>

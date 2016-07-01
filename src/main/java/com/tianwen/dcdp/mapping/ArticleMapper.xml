@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IArticleDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.Article" >
+    <id column="CONTENT_ID" property="contentId" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CONTENT_TYPE" property="contentType" jdbcType="TINYINT" />
+    <result column="CATEGORY_ID" property="categoryId" jdbcType="INTEGER" />
+    <result column="USER_ID" property="userId" jdbcType="INTEGER" />
+    <result column="PUBLISH_TIME" property="publishTime" jdbcType="BIGINT" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="BIGINT" />
+    <result column="URL" property="url" jdbcType="VARCHAR" />
+    <result column="INTRODUCE" property="introduce" jdbcType="VARCHAR" />
+    <result column="SOURCE" property="source" jdbcType="VARCHAR" />
+    <result column="AUTHOR" property="author" jdbcType="VARCHAR" />
+    <result column="READ_TIMES" property="readTimes" jdbcType="INTEGER" />
+    <result column="COMMENT_TIMES" property="commentTimes" jdbcType="INTEGER" />
+    <result column="FAVOURITE_TIMES" property="favouriteTimes" jdbcType="INTEGER" />
+    <result column="REPOST_TIMES" property="repostTimes" jdbcType="INTEGER" />
+    <result column="ORDER_NUM" property="orderNum" jdbcType="INTEGER" />
+    <result column="KEYWORDS" property="keywords" jdbcType="VARCHAR" />
+    <result column="IS_COMMENT" property="isComment" jdbcType="TINYINT" />
+    <result column="IS_TOP" property="isTop" jdbcType="TINYINT" />
+    <result column="PIC_URL" property="picUrl" jdbcType="VARCHAR" />
+    <result column="FILE_URL" property="fileUrl" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="TINYINT" />
+    <result column="SUGGESTION" property="suggestion" jdbcType="VARCHAR" />
+    <result column="MEDIA_TIME" property="mediaTime" jdbcType="INTEGER" />
+    <result column="SHOW_STATUS" property="showStatus" jdbcType="TINYINT"/>
+    <result column="NICKNAME" property="userName" jdbcType="VARCHAR"/>
+    <result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR"/>
+    <result column="DEV_TYPE" property="devType" jdbcType="TINYINT"/>
+    <result column="ORDER_NUMBER" property="order" jdbcType="INTEGER"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.tianwen.dcdp.pojo.Article" extends="BaseResultMap" >
+    <result column="CONTENT" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CONTENT_ID, TITLE, CONTENT_TYPE, CATEGORY_ID, USER_ID, PUBLISH_TIME, UPDATE_TIME, 
+    URL, INTRODUCE, SOURCE, AUTHOR, READ_TIMES, COMMENT_TIMES, FAVOURITE_TIMES, REPOST_TIMES, 
+    ORDER_NUM, KEYWORDS, IS_COMMENT, IS_TOP, PIC_URL, FILE_URL, STATE, SUGGESTION, DEV_TYPE, MEDIA_TIME,SHOW_STATUS
+  </sql>
+  <sql id="Blob_Column_List" >
+    CONTENT
+  </sql>
+  
+  <!-- 用于按条件查询资讯信息 -->
+  <sql id="whereCondition">
+  	<if test="title != null and !&quot;&quot;.equals(title.trim())">
+  		and a.TITLE like concat('%',#{title},'%')
+  	</if>
+  	<if test="category != null">
+  		and a.CATEGORY_ID = #{category}
+  	</if>
+  	<if test="origin != null and !&quot;&quot;.equals(origin.trim())">
+  		and a.SOURCE like concat('%',#{origin},'%')
+  	</if>
+  	<if test="state != null">
+  		and a.STATE = #{state}
+  	</if>
+  	<if test="contentType != null">
+  		and a.CONTENT_TYPE = #{contentType}
+  	</if>
+  	<if test="startDate!=null">  
+   		AND a.PUBLISH_TIME <![CDATA[>=]]> #{startDate}  
+	</if>
+	<if test="endDate!=null">  
+    	AND a.PUBLISH_TIME <![CDATA[<=]]> #{endDate}  
+	</if>
+	<if test="parentId != null">
+		and c.PARENT_ID = #{parentId}
+	</if>
+	<if test="categoryId != null">
+		and a.CATEGORY_ID = #{categoryId}
+	</if>
+  </sql>
+  
+   <sql id="whereMap">
+  	<if test="title != null and !&quot;&quot;.equals(title.trim())">
+  		and b.TITLE like concat('%',#{title},'%')
+  	</if>
+  	<if test="origin != null and !&quot;&quot;.equals(origin.trim())">
+  		and b.SOURCE like concat('%',#{origin},'%')
+  	</if>
+  	<if test="startDate!=null">  
+   		AND b.PUBLISH_TIME <![CDATA[>=]]> #{startDate}  
+	</if>
+	<if test="endDate!=null">  
+    	AND b.PUBLISH_TIME <![CDATA[<=]]> #{endDate}  
+	</if>
+  </sql>
+  
+  <!-- 根据主键ID，查询资讯信息 -->
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from article
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据主键删除对应资讯信息 -->
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from article
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </delete>
+  
+  <!-- 动态新增资讯信息 -->
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.Article" useGeneratedKeys="true" keyProperty="contentId">
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="contentId != null" >
+        CONTENT_ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="contentType != null" >
+        CONTENT_TYPE,
+      </if>
+      <if test="categoryId != null" >
+        CATEGORY_ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="url != null" >
+        URL,
+      </if>
+      <if test="introduce != null" >
+        INTRODUCE,
+      </if>
+      <if test="source != null" >
+        SOURCE,
+      </if>
+      <if test="author != null" >
+        AUTHOR,
+      </if>
+      <if test="readTimes != null" >
+        READ_TIMES,
+      </if>
+      <if test="commentTimes != null" >
+        COMMENT_TIMES,
+      </if>
+      <if test="favouriteTimes != null" >
+        FAVOURITE_TIMES,
+      </if>
+      <if test="repostTimes != null" >
+        REPOST_TIMES,
+      </if>
+      <if test="orderNum != null" >
+        ORDER_NUM,
+      </if>
+      <if test="keywords != null" >
+        KEYWORDS,
+      </if>
+      <if test="isComment != null" >
+        IS_COMMENT,
+      </if>
+      <if test="isTop != null" >
+        IS_TOP,
+      </if>
+      <if test="picUrl != null" >
+        PIC_URL,
+      </if>
+      <if test="fileUrl != null" >
+        FILE_URL,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="suggestion != null" >
+        SUGGESTION,
+      </if>
+      <if test="devType != null">
+      	DEV_TYPE,
+      </if>
+      <if test="mediaTime != null" >
+        MEDIA_TIME,
+      </if>
+      <if test="content != null" >
+        CONTENT,
+      </if>
+      <if test="showStatus != null">
+      	SHOW_STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="contentId != null" >
+        #{contentId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="contentType != null" >
+        #{contentType,jdbcType=TINYINT},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null" >
+        #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="readTimes != null" >
+        #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="commentTimes != null" >
+        #{commentTimes,jdbcType=INTEGER},
+      </if>
+      <if test="favouriteTimes != null" >
+        #{favouriteTimes,jdbcType=INTEGER},
+      </if>
+      <if test="repostTimes != null" >
+        #{repostTimes,jdbcType=INTEGER},
+      </if>
+      <if test="orderNum != null" >
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="keywords != null" >
+        #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="isComment != null" >
+        #{isComment,jdbcType=TINYINT},
+      </if>
+      <if test="isTop != null" >
+        #{isTop,jdbcType=TINYINT},
+      </if>
+      <if test="picUrl != null" >
+        #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null" >
+        #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=TINYINT},
+      </if>
+      <if test="suggestion != null" >
+        #{suggestion,jdbcType=VARCHAR},
+      </if>
+      <if test="devType != null">
+      	#{devType,jdbcType=TINYINT},
+      </if>
+      <if test="mediaTime != null" >
+        #{mediaTime,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="showStatus != null">
+      	#{showStatus, jdbcType=TINYINT}
+      </if>
+    </trim>
+  </insert>
+  
+  <!-- 动态更新资讯信息 -->
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.Article" >
+    update article
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="contentType != null" >
+        CONTENT_TYPE = #{contentType,jdbcType=TINYINT},
+      </if>
+      <if test="categoryId != null" >
+        CATEGORY_ID = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="publishTime != null" >
+        PUBLISH_TIME = #{publishTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="url != null" >
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="introduce != null" >
+        INTRODUCE = #{introduce,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        SOURCE = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="author != null" >
+        AUTHOR = #{author,jdbcType=VARCHAR},
+      </if>
+      <if test="readTimes != null" >
+        READ_TIMES = #{readTimes,jdbcType=INTEGER},
+      </if>
+      <if test="commentTimes != null" >
+        COMMENT_TIMES = #{commentTimes,jdbcType=INTEGER},
+      </if>
+      <if test="favouriteTimes != null" >
+        FAVOURITE_TIMES = #{favouriteTimes,jdbcType=INTEGER},
+      </if>
+      <if test="repostTimes != null" >
+        REPOST_TIMES = #{repostTimes,jdbcType=INTEGER},
+      </if>
+      <if test="orderNum != null" >
+        ORDER_NUM = #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="keywords != null" >
+        KEYWORDS = #{keywords,jdbcType=VARCHAR},
+      </if>
+      <if test="isComment != null" >
+        IS_COMMENT = #{isComment,jdbcType=TINYINT},
+      </if>
+      <if test="isTop != null" >
+        IS_TOP = #{isTop,jdbcType=TINYINT},
+      </if>
+      <if test="picUrl != null" >
+        PIC_URL = #{picUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="fileUrl != null" >
+        FILE_URL = #{fileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=TINYINT},
+      </if>
+      <if test="suggestion != null" >
+        SUGGESTION = #{suggestion,jdbcType=VARCHAR},
+      </if>
+      <if test="devType != null">
+      	DEV_TYPE = #{devType,jdbcType=TINYINT},
+      </if>
+      <if test="mediaTime != null" >
+        MEDIA_TIME = #{mediaTime,jdbcType=INTEGER},
+      </if>
+      <if test="showStatus != null">
+      	SHOW_STATUS = #{showStatus,jdbcType=TINYINT},
+      </if>
+      <if test="content != null" >
+        CONTENT = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where CONTENT_ID = #{contentId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询符合条件的总记录数 -->
+  <select id="selectTotalCount" parameterType="map" resultType="int">
+  	select count(1)
+  	from article a left join news_category c on a.CATEGORY_ID = c.CATEGORY_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  </select>
+  
+  <!-- 按条件分页获取资讯列表 -->
+  <select id="selectPageList" resultMap="BaseResultMap" parameterType="map">
+  	select a.*,b.NICKNAME,c.CATEGORY_NAME
+  	from article a left join user b on a.USER_ID = b.USER_ID left join news_category c on a.CATEGORY_ID = c.CATEGORY_ID
+  	<where>
+  		<include refid="whereCondition"></include>
+  	</where>
+  	order by a.CONTENT_ID desc
+  	<if test="start!=null and size!=null">  
+	LIMIT #{start},#{size}
+	</if>
+  </select>
+  
+  <!-- 根据资讯ID，批量更新资讯状态 -->
+  <update id="updateState">
+  	update article 
+  	set STATE = #{value}
+  	where CONTENT_ID in(
+  		<foreach collection="ids" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </update>
+  
+  <!-- 根据资讯ID，批量删除资讯 -->
+  <delete id="batchDeleteArticle" parameterType="list">
+  	delete from article
+  	where CONTENT_ID in(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  	)
+  </delete>
+  
+  <!-- 获取热门资讯列表 -->
+  <select id="getHotNewsList" parameterType="map" resultMap="BaseResultMap">
+  	select b.*, a.ORDER_NUM AS ORDER_NUMBER, c.NICKNAME
+  	from hot_news a left join article b on a.CONTENT_ID = b.CONTENT_ID
+  	left join user c on b.USER_ID = c.USER_ID
+  	<where>
+  		<include refid="whereMap"></include>
+  	</where>
+  	order by a.CONTENT_ID desc
+  </select>
+  
+  <!-- 显示、隐藏资讯 -->
+  <update id="updateVisibility" parameterType="list">
+  	update article
+  	set SHOW_STATUS = (case when SHOW_STATUS = 0 then 1 else 0 end)
+  	where CONTENT_ID in
+  	<foreach collection="list" open="(" item="item" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </update>
+  
+   <select id="selectAll" resultMap="ResultMapWithBLOBs">
+    select CONTENT_ID as contentId , TITLE as title , CONTENT as content
+     from  article where 1=1 
+   </select>
+   
+    <select id="selectArticleByIds" parameterType="list" resultMap="ResultMapWithBLOBs">
+	    select a.*,b.NICKNAME,c.CATEGORY_NAME
+	  	from article a left join user b on a.USER_ID = b.USER_ID left join news_category c on a.CATEGORY_ID = c.CATEGORY_ID
+	  	where a.CONTENT_ID in
+		(
+  		<foreach collection="list" item="item" separator=",">
+  			#{item}
+  		</foreach>
+  		)
+	  	order by a.CONTENT_ID desc
+   </select>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.INewsCategoryDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.NewsCategory" >
+    <id column="CATEGORY_ID" property="categoryId" jdbcType="INTEGER" />
+    <result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR" />
+    <result column="IS_VISIBLE" property="isVisible" jdbcType="TINYINT" />
+    <result column="COUNT" property="count" jdbcType="INTEGER"/>
+    <result column="IS_FOCUS" property="isFocus" jdbcType="TINYINT"/>
+    <result column="PARENT_ID" property="parentId" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    CATEGORY_ID, CATEGORY_NAME, IS_VISIBLE, IS_FOCUS, PARENT_ID
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from news_category
+    where CATEGORY_ID = #{categoryId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from news_category
+    where CATEGORY_ID = #{categoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.NewsCategory" useGeneratedKeys="true" keyProperty="categoryId">
+    insert into news_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="categoryId != null" >
+        CATEGORY_ID,
+      </if>
+      <if test="categoryName != null" >
+        CATEGORY_NAME,
+      </if>
+      <if test="isVisible != null" >
+        IS_VISIBLE,
+      </if>
+      <if test="isFocus != null">
+      	IS_FOCUS,
+      </if>
+      <if test="parentId != null">
+      	PARENT_ID
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="categoryName != null" >
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="isVisible != null" >
+        #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="isFocus != null">
+      	#{isFocus, jdbcType=TINYINT},
+      </if>
+      <if test="parentId != null">
+      	#{parentId, jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.NewsCategory" >
+    update news_category
+    <set >
+      <if test="categoryName != null" >
+        CATEGORY_NAME = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="isVisible != null" >
+        IS_VISIBLE = #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="isFocus != null">
+      	IS_FOCUS = #{isFocus, jdbcType=TINYINT},
+      </if>
+      <if test="parentId != null">
+      	PARENT_ID = #{parentId, jdbcType=INTEGER}
+      </if>
+    </set>
+    where CATEGORY_ID = #{categoryId,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select <include refid="Base_Column_List"></include>
+  	from news_category
+  	where IS_VISIBLE = 0
+  	order by CATEGORY_ID desc
+  </select>
+  
+  <select id="selectAllWithCountByPid" parameterType="int" resultMap="BaseResultMap">
+  	select a.*,b.articleCount COUNT
+	from news_category a  
+	left join (select CATEGORY_ID,count(1) articleCount from article where CONTENT_TYPE=0 group by CATEGORY_ID) b 
+	on a.CATEGORY_ID = b.CATEGORY_ID
+	where a.PARENT_ID = #{pId,jdbcType=INTEGER}
+	order by a.CATEGORY_ID desc
+  </select>
+  
+  <delete id="batchDeleteByPrimaryKey" parameterType="list">
+  	delete from news_category
+  	where CATEGORY_ID in
+  	<foreach collection="list" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+</mapper>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.ICrawlerConfigDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.CrawlerConfig" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="websiteName" property="websiteName" jdbcType="VARCHAR" />
+    <result column="websiteAdress" property="websiteAdress" jdbcType="VARCHAR" />
+    <result column="isPaging" property="isPaging" jdbcType="VARCHAR" />
+    <result column="pagingRules" property="pagingRules" jdbcType="VARCHAR" />
+    <result column="threadNumber" property="threadNumber" jdbcType="INTEGER" />
+    <result column="collectInterval" property="collectInterval" jdbcType="INTEGER" />
+    <result column="filterRegular" property="filterRegular" jdbcType="VARCHAR" />
+    <result column="isUseAgent" property="isUseAgent" jdbcType="VARCHAR" />
+    <result column="headOptions" property="headOptions" jdbcType="VARCHAR" />
+    <result column="depth" property="depth" jdbcType="INTEGER" />
+    <result column="w_id" property="wId" jdbcType="BIGINT" />
+    <result column="modelName" property="modelName" jdbcType="VARCHAR"/>
+    <result column="modelClassPath" property="modelClassPath" jdbcType="VARCHAR"/>
+    <result column="bz" property="bz" jdbcType="VARCHAR"/>
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.tianwen.dcdp.pojo.CrawlerConfig" extends="BaseResultMap" >
+    <result column="fieldConfig" property="fieldconfig" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, websiteName, websiteAdress, isPaging, pagingRules, threadNumber, collectInterval, 
+    filterRegular, isUseAgent, headOptions, depth, w_id
+  </sql>
+  <sql id="Blob_Column_List" >
+    fieldConfig
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_collectorconfig
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_collectorconfig
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.CrawlerConfig" useGeneratedKeys="true" keyProperty="id">
+    insert into t_collectorconfig
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="websiteName != null" >
+        websiteName,
+      </if>
+      <if test="websiteAdress != null" >
+        websiteAdress,
+      </if>
+      <if test="isPaging != null" >
+        isPaging,
+      </if>
+      <if test="pagingRules != null" >
+        pagingRules,
+      </if>
+      <if test="threadNumber != null" >
+        threadNumber,
+      </if>
+      <if test="collectInterval != null" >
+        collectInterval,
+      </if>
+      <if test="filterRegular != null" >
+        filterRegular,
+      </if>
+      <if test="isUseAgent != null" >
+        isUseAgent,
+      </if>
+      <if test="headOptions != null" >
+        headOptions,
+      </if>
+      <if test="depth != null" >
+        depth,
+      </if>
+      <if test="wId != null" >
+        w_id,
+      </if>
+      <if test="fieldConfig != null" >
+        fieldConfig,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="websiteName != null" >
+        #{websiteName,jdbcType=VARCHAR},
+      </if>
+      <if test="websiteAdress != null" >
+        #{websiteAdress,jdbcType=VARCHAR},
+      </if>
+      <if test="isPaging != null" >
+        #{isPaging,jdbcType=VARCHAR},
+      </if>
+      <if test="pagingRules != null" >
+        #{pagingRules,jdbcType=VARCHAR},
+      </if>
+      <if test="threadNumber != null" >
+        #{threadNumber,jdbcType=INTEGER},
+      </if>
+      <if test="collectInterval != null" >
+        #{collectInterval,jdbcType=INTEGER},
+      </if>
+      <if test="filterRegular != null" >
+        #{filterRegular,jdbcType=VARCHAR},
+      </if>
+      <if test="isUseAgent != null" >
+        #{isUseAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="headOptions != null" >
+        #{headOptions,jdbcType=VARCHAR},
+      </if>
+      <if test="depth != null" >
+        #{depth,jdbcType=INTEGER},
+      </if>
+      <if test="wId != null" >
+        #{wId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldConfig != null" >
+        #{fieldConfig,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.CrawlerConfig" >
+    update t_collectorconfig
+    <set >
+      <if test="websiteName != null" >
+        websiteName = #{websiteName,jdbcType=VARCHAR},
+      </if>
+      <if test="websiteAdress != null" >
+        websiteAdress = #{websiteAdress,jdbcType=VARCHAR},
+      </if>
+      <if test="isPaging != null" >
+        isPaging = #{isPaging,jdbcType=VARCHAR},
+      </if>
+      <if test="pagingRules != null" >
+        pagingRules = #{pagingRules,jdbcType=VARCHAR},
+      </if>
+      <if test="threadNumber != null" >
+        threadNumber = #{threadNumber,jdbcType=INTEGER},
+      </if>
+      <if test="collectInterval != null" >
+	collectInterval = #{collectInterval,jdbcType=INTEGER},
+      </if>
+      <if test="filterRegular != null" >
+        filterRegular = #{filterRegular,jdbcType=VARCHAR},
+      </if>
+      <if test="isUseAgent != null" >
+        isUseAgent = #{isUseAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="headOptions != null" >
+        headOptions = #{headOptions,jdbcType=VARCHAR},
+      </if>
+      <if test="depth != null" >
+        depth = #{depth,jdbcType=INTEGER},
+      </if>
+      <if test="wId != null" >
+        w_id = #{wId,jdbcType=BIGINT},
+      </if>
+      <if test="fieldConfig != null" >
+        fieldConfig = #{fieldConfig,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectBySiteId" parameterType="long" resultMap="BaseResultMap">
+  	select *
+  	from t_collectorconfig
+  	where w_id = #{id,jdbcType=BIGINT};
+  </select>
+  
+  <select id="selectBysiteIdWithModelInfo" parameterType="long" resultMap="BaseResultMap">
+  	select a.*, c.modelName, c.modelClassPath, c.bz
+  	from t_collectorconfig a left join t_crawlerWebsite b on a.w_id = b.id left join 
+  	t_crawlerModel c on b.m_id = c.id
+  	where a.w_id = #{id, jdbcType=BIGINT}
+  </select>
+</mapper>

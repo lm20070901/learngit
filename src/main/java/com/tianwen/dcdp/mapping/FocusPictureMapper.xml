@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.IFocusPictureDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.FocusPicture" >
+    <id column="PIC_ID" property="picId" jdbcType="INTEGER" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="LINK_DIR" property="linkDir" jdbcType="VARCHAR" />
+    <result column="IS_VISIBLE" property="isVisible" jdbcType="TINYINT" />
+    <result column="RELATED_LINK" property="relatedLink" jdbcType="VARCHAR" />
+    <result column="RELATED_ARTICLE_ID" property="relatedArticleId" jdbcType="INTEGER" />
+    <result column="CONTENT_TYPE" property="contentType" jdbcType="TINYINT" />
+    <result column="ARTICLE_TITLE" property="articleTitle" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    PIC_ID, TITLE, LINK_DIR, IS_VISIBLE, RELATED_LINK, RELATED_ARTICLE_ID, CONTENT_TYPE
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from focus_picture
+    where PIC_ID = #{picId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from focus_picture
+    where PIC_ID = #{picId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.FocusPicture" useGeneratedKeys="true" keyProperty="picId">
+    insert into focus_picture
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="picId != null" >
+        PIC_ID,
+      </if>
+      <if test="title != null" >
+        TITLE,
+      </if>
+      <if test="linkDir != null" >
+        LINK_DIR,
+      </if>
+      <if test="isVisible != null" >
+        IS_VISIBLE,
+      </if>
+      <if test="relatedLink != null" >
+        RELATED_LINK,
+      </if>
+      <if test="relatedArticleId != null" >
+        RELATED_ARTICLE_ID,
+      </if>
+      <if test="contentType != null" >
+        CONTENT_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="picId != null" >
+        #{picId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="linkDir != null" >
+        #{linkDir,jdbcType=VARCHAR},
+      </if>
+      <if test="isVisible != null" >
+        #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="relatedLink != null" >
+        #{relatedLink,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedArticleId != null" >
+        #{relatedArticleId,jdbcType=INTEGER},
+      </if>
+      <if test="contentType != null" >
+        #{contentType,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.FocusPicture" >
+    update focus_picture
+    <set >
+      <if test="title != null" >
+        TITLE = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="linkDir != null" >
+        LINK_DIR = #{linkDir,jdbcType=VARCHAR},
+      </if>
+      <if test="isVisible != null" >
+        IS_VISIBLE = #{isVisible,jdbcType=TINYINT},
+      </if>
+      <if test="relatedLink != null" >
+        RELATED_LINK = #{relatedLink,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedArticleId != null" >
+        RELATED_ARTICLE_ID = #{relatedArticleId,jdbcType=INTEGER},
+      </if>
+      <if test="contentType != null" >
+        CONTENT_TYPE = #{contentType,jdbcType=TINYINT},
+      </if>
+    </set>
+    where PIC_ID = #{picId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询所有焦点图 -->
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select * 
+  	from focus_picture
+  	order by PIC_ID desc
+  </select>
+  
+  <!-- 批量删除焦点图 -->
+  <delete id="batchDelete" parameterType="list">
+  	delete from focus_picture
+  	where PIC_ID in
+  	<foreach collection="list" item="item" open="(" separator="," close=")">
+  		#{item}
+  	</foreach>
+  </delete>
+  
+  <!-- 获取焦点图信息，并携带关联资讯的title -->
+  <select id="selectByPrimaryKeyWithArticleTitle" parameterType="int" resultMap="BaseResultMap">
+  	select a.*, b.TITLE AS ARTICLE_TITLE
+  	from focus_picture a left join article b on a.RELATED_ARTICLE_ID = b.CONTENT_ID
+  	where a.PIC_ID = #{picId}
+  </select>
+</mapper>

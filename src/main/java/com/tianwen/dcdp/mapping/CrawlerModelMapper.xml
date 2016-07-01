@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.ICrawlerModelDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.CrawlerModel" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="modelName" property="modelName" jdbcType="VARCHAR" />
+    <result column="modelClassPath" property="modelClassPath" jdbcType="VARCHAR" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate" jdbcType="DATE" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, modelName, modelClassPath, bz, createDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_crawlermodel
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_crawlermodel
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.CrawlerModel" useGeneratedKeys="true" keyProperty="id">
+    insert into t_crawlermodel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="modelName != null" >
+        modelName,
+      </if>
+      <if test="modelClassPath != null" >
+        modelClassPath,
+      </if>
+      <if test="bz != null" >
+        bz,
+      </if>
+      <if test="createDate != null" >
+        createDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="modelName != null" >
+        #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelClassPath != null" >
+        #{modelClassPath,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.CrawlerModel" >
+    update t_crawlermodel
+    <set >
+      <if test="modelName != null" >
+        modelName = #{modelName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelClassPath != null" >
+        modelClassPath = #{modelClassPath,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        createDate = #{createDate,jdbcType=DATE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+  	select * 
+  	from t_crawlermodel
+  </select>
+</mapper>

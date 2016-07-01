@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tianwen.dcdp.dao.ICrawlerWebsiteDao" >
+  <resultMap id="BaseResultMap" type="com.tianwen.dcdp.pojo.CrawlerWebsite" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="websiteName" property="websiteName" jdbcType="VARCHAR" />
+    <result column="websiteAdress" property="websiteAdress" jdbcType="VARCHAR" />
+    <result column="bz" property="bz" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate" jdbcType="DATE" />
+    <result column="m_id" property="mId" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, websiteName, websiteAdress, bz, createDate, m_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_crawlerwebsite
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_crawlerwebsite
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="com.tianwen.dcdp.pojo.CrawlerWebsite" useGeneratedKeys="true" keyProperty="id">
+    insert into t_crawlerwebsite
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="websiteName != null" >
+        websiteName,
+      </if>
+      <if test="websiteAdress != null" >
+        websiteAdress,
+      </if>
+      <if test="bz != null" >
+        bz,
+      </if>
+      <if test="createDate != null" >
+        createDate,
+      </if>
+      <if test="mId != null" >
+        m_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="websiteName != null" >
+        #{websiteName,jdbcType=VARCHAR},
+      </if>
+      <if test="websiteAdress != null" >
+        #{websiteAdress,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=DATE},
+      </if>
+      <if test="mId != null" >
+        #{mId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tianwen.dcdp.pojo.CrawlerWebsite" >
+    update t_crawlerwebsite
+    <set >
+      <if test="websiteName != null" >
+        websiteName = #{websiteName,jdbcType=VARCHAR},
+      </if>
+      <if test="websiteAdress != null" >
+        websiteAdress = #{websiteAdress,jdbcType=VARCHAR},
+      </if>
+      <if test="bz != null" >
+        bz = #{bz,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        createDate = #{createDate,jdbcType=DATE},
+      </if>
+      <if test="mId != null" >
+        m_id = #{mId,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  
+  <select id="selectByModelId" parameterType="long" resultMap="BaseResultMap">
+  	select *
+  	from t_crawlerwebsite
+  	where m_id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>
